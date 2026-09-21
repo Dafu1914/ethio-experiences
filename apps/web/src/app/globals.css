@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Brand ───────────────────────────── */
+  --color-brand-orange: #FF5533;
+  --color-brand-blue: #0A66FF;
+  --color-brand-blueHover: #0852CC;
+
+  /* ── Ink / text ──────────────────────── */
+  --color-ink: #0A1A2F;
+  --color-body: #1A2B49;
+  --color-muted: #6B7A90;
+
+  /* ── Surfaces & borders ──────────────── */
+  --color-line: #E5E8EC;
+  --color-surface: #F7F8FA;
+
+  /* ── Accents ─────────────────────────── */
+  --color-star: #FFB400;
+  --color-success: #12A150;
+  --color-danger: #7A1F1F;
+
+  /* ── Radii ───────────────────────────── */
+  --radius-card: 12px;
+  --radius-pill: 9999px;
+  --radius-tile: 10px;
+
+  /* ── Fonts ───────────────────────────── */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-body);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4 {
+  color: var(--color-ink);
+  letter-spacing: -0.02em;
+}
