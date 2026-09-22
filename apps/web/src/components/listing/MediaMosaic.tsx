@@ -36,7 +36,7 @@ export function MediaMosaic({ images }: { images: MosaicImage[] }) {
         </div>
       )}
 
-      {/* Mobile-only second image */}
+      {/* Mobile-only second/third images */}
       {b && (
         <div className="col-span-1 overflow-hidden bg-surface md:hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -50,7 +50,6 @@ export function MediaMosaic({ images }: { images: MosaicImage[] }) {
         </div>
       )}
 
-      {/* View all button */}
       <button
         type="button"
         className="absolute bottom-4 right-4 rounded-pill bg-white/95 px-4 py-2 text-sm font-semibold text-ink shadow-md transition hover:bg-white"

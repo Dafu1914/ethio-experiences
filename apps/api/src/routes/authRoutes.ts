@@ -14,5 +14,6 @@ router.post('/forgot-password', limiter, c.forgotPassword);
 router.post('/reset-password', limiter, c.resetPassword);
 router.get('/verify-email', c.verifyEmail);
 router.get('/me', requireAuth, c.me);
+router.post('/become-vendor', requireAuth, c.becomeVendor);
 
 export default router;

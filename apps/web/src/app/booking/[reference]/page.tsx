@@ -58,21 +58,29 @@ export default async function BookingConfirmedPage({
           </p>
         </div>
 
-        {/* Listing */}
+        {/* Listing — safe against deleted listings */}
         <div className="mt-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             Your experience
           </p>
-          <Link
-            href={`/listing/${listing.slug}`}
-            className="mt-1 block text-lg font-bold text-ink hover:text-brand-blue"
-          >
-            {listing.title}
-          </Link>
-          <p className="text-sm text-muted">📍 {listing.city}</p>
+          {listing ? (
+            <>
+              <Link
+                href={`/listing/${listing.slug}`}
+                className="mt-1 block text-lg font-bold text-ink hover:text-brand-blue"
+              >
+                {listing.title}
+              </Link>
+              <p className="text-sm text-muted">📍 {listing.city}</p>
+            </>
+          ) : (
+            <p className="mt-1 text-sm italic text-muted">
+              This listing is no longer available.
+            </p>
+          )}
         </div>
 
-        {/* Details grid */}
+        {/* Details */}
         <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
           <Row label="Date" value={new Date(booking.date).toDateString()} />
           <Row label="Time" value={booking.timeSlot || '—'} />

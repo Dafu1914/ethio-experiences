@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { imageUrl } from '@/lib/api';
 
 export type ListingCardData = {
   _id: string;
@@ -28,20 +29,25 @@ function formatDuration(mins: number) {
 }
 
 export function ListingCard({ listing }: { listing: ListingCardData }) {
-  const img = listing.images?.[0]?.url ?? '';
+  const img = imageUrl(listing.images?.[0]?.url);
+
   return (
     <Link
       href={`/listing/${listing.slug}`}
       className="group block overflow-hidden rounded-card border border-line bg-white transition hover:shadow-[0_6px_24px_rgba(10,26,47,0.10)]"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-surface">
-        {img && (
+        {img ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={img}
             alt={listing.images[0].alt || listing.title}
             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-xs text-muted">
+            No image
+          </div>
         )}
 
         {listing.isOriginal && (
@@ -56,7 +62,6 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-ink shadow transition hover:bg-white"
           onClick={(e) => {
             e.preventDefault();
-            // TODO: wire to wishlist later
           }}
         >
           <svg

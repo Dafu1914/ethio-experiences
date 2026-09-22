@@ -50,12 +50,22 @@ export const createBooking = async (req: Request, res: Response) => {
   res.status(201).json({ booking });
 };
 
-// GET /api/bookings/mine
+// GET /api/bookings/mine   (traveler's own bookings)
 export const myBookings = async (req: Request, res: Response) => {
   const user = req.user!;
   const items = await Booking.find({ userId: user._id })
     .sort({ createdAt: -1 })
     .populate('listingId', 'title slug images city priceFrom');
+  res.json({ items });
+};
+
+// GET /api/bookings/vendor/mine   (vendor's incoming bookings)
+export const vendorBookings = async (req: Request, res: Response) => {
+  const user = req.user!;
+  const items = await Booking.find({ vendorId: user._id })
+    .sort({ createdAt: -1 })
+    .populate('listingId', 'title slug images city')
+    .populate('userId', 'name email');
   res.json({ items });
 };
 
@@ -92,7 +102,8 @@ export const cancelBooking = async (req: Request, res: Response) => {
   if (!booking) return res.status(404).json({ error: 'Booking not found' });
 
   const isOwner = booking.userId.toString() === user._id.toString();
-  if (!isOwner && user.role !== 'admin')
+  const isVendor = booking.vendorId.toString() === user._id.toString();
+  if (!isOwner && !isVendor && user.role !== 'admin')
     return res.status(403).json({ error: 'Forbidden' });
 
   if (booking.status === 'cancelled')

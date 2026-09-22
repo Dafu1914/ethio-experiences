@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
+import { api, imageUrl } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 
 type Booking = {
@@ -19,7 +19,7 @@ type Booking = {
     title: string;
     city: string;
     images: { url: string; alt: string }[];
-  };
+  } | null;
 };
 
 export default function MyBookingsPage() {
@@ -69,7 +69,10 @@ export default function MyBookingsPage() {
     <main className="mx-auto max-w-4xl px-6 py-10">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-extrabold text-ink">My bookings</h1>
-        <Link href="/account" className="text-sm font-medium text-brand-blue hover:underline">
+        <Link
+          href="/account"
+          className="text-sm font-medium text-brand-blue hover:underline"
+        >
           ← Back to account
         </Link>
       </div>
@@ -93,34 +96,47 @@ export default function MyBookingsPage() {
               key={b._id}
               className="flex flex-col gap-4 rounded-card border border-line bg-white p-4 sm:flex-row"
             >
-              {/* Image */}
-              <Link
-                href={`/listing/${b.listingId?.slug}`}
-                className="aspect-[16/10] w-full shrink-0 overflow-hidden rounded-tile bg-surface sm:w-40"
-              >
-                {b.listingId?.images?.[0]?.url && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={b.listingId.images[0].url}
-                    alt={b.listingId.images[0].alt}
-                    className="h-full w-full object-cover"
-                  />
-                )}
-              </Link>
+              {/* Thumbnail / link to listing */}
+              {b.listingId?.slug ? (
+                <Link
+                  href={`/listing/${b.listingId.slug}`}
+                  className="aspect-[16/10] w-full shrink-0 overflow-hidden rounded-tile bg-surface sm:w-40"
+                >
+                  {b.listingId.images?.[0]?.url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={b.listingId.images[0].url}
+                      alt={b.listingId.images[0].alt}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : null}
+                </Link>
+              ) : (
+                <div className="aspect-[16/10] w-full shrink-0 overflow-hidden rounded-tile bg-surface sm:w-40" />
+              )}
 
               {/* Details */}
               <div className="flex flex-1 flex-col justify-between">
                 <div>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <Link
-                        href={`/listing/${b.listingId?.slug}`}
-                        className="text-base font-bold text-ink hover:text-brand-blue"
-                      >
-                        {b.listingId?.title}
-                      </Link>
-                      <p className="text-xs text-muted">📍 {b.listingId?.city}</p>
+                      {b.listingId?.slug ? (
+                        <Link
+                          href={`/listing/${b.listingId.slug}`}
+                          className="text-base font-bold text-ink hover:text-brand-blue"
+                        >
+                          {b.listingId.title}
+                        </Link>
+                      ) : (
+                        <span className="text-base font-bold italic text-muted">
+                          Listing removed
+                        </span>
+                      )}
+                      {b.listingId?.city && (
+                        <p className="text-xs text-muted">📍 {b.listingId.city}</p>
+                      )}
                     </div>
+
                     <span
                       className={`shrink-0 rounded-pill px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
                         b.status === 'cancelled'

@@ -139,6 +139,17 @@ export const verifyEmail = async (req: Request, res: Response) => {
   res.json({ ok: true });
 };
 
+// STEP 71 — upgrade any logged-in user to vendor
+export const becomeVendor = async (req: Request, res: Response) => {
+  const user = req.user!;
+  if (user.role === 'vendor' || user.role === 'admin') {
+    return res.json({ user: publicUser(user) });
+  }
+  user.role = 'vendor';
+  await user.save();
+  res.json({ user: publicUser(user) });
+};
+
 function publicUser(u: any) {
   return {
     id: u.id,

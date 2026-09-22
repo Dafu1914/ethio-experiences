@@ -1,4 +1,3 @@
-import bookingRoutes from './routes/bookingRoutes';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -7,16 +6,25 @@ import mongoose from 'mongoose';
 import { env } from './config/env';
 import authRoutes from './routes/authRoutes';
 import listingRoutes from './routes/listingRoutes';
+import bookingRoutes from './routes/bookingRoutes';
+import uploadRoutes from './routes/uploadRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: env.WEB_URL, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
-app.use('/api/bookings', bookingRoutes);
+
+app.use('/uploads', express.static('uploads'));
+
 app.use('/api/auth', authRoutes);
 app.use('/api/listings', listingRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/uploads', uploadRoutes);
+app.use('/api/admin', adminRoutes);
+
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
 mongoose
