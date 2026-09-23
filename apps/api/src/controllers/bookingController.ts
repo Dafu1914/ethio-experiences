@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import crypto from 'crypto';
 import { Booking } from '../models/Booking';
 import { Listing } from '../models/Listing';
+import { User } from '../models/User';
+import { sendBookingConfirmation, sendVendorNewBooking } from '../utils/email';
 
 const makeRef = () =>
   'EE-' + crypto.randomBytes(3).toString('hex').toUpperCase();
@@ -46,6 +48,38 @@ export const createBooking = async (req: Request, res: Response) => {
     total: { amount, currency: listing.priceFrom.currency },
     status: 'confirmed',
   });
+
+  // Fire-and-forget emails (don't block the response)
+  (async () => {
+    try {
+      await sendBookingConfirmation({
+        to: booking.contactEmail,
+        travelerName: booking.contactName,
+        reference: booking.reference,
+        listingTitle: listing.title,
+        city: listing.city,
+        date: new Date(booking.date).toDateString(),
+        timeSlot: booking.timeSlot,
+        participants: booking.participants,
+        total: booking.total,
+      });
+
+      const vendor = await User.findById(listing.vendorId);
+      if (vendor?.email) {
+        await sendVendorNewBooking({
+          to: vendor.email,
+          vendorName: vendor.name,
+          reference: booking.reference,
+          listingTitle: listing.title,
+          travelerName: booking.contactName,
+          date: new Date(booking.date).toDateString(),
+          total: booking.total,
+        });
+      }
+    } catch (err) {
+      console.error('[booking-email] failed', err);
+    }
+  })();
 
   res.status(201).json({ booking });
 };

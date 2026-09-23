@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 
@@ -46,8 +47,9 @@ export default function AdminUsersPage() {
       setUsers((prev) =>
         prev.map((u) => (u._id === id ? { ...u, role: role as any } : u))
       );
+      toast.success('Role updated');
     } catch (e: any) {
-      alert(e.message || 'Update failed');
+      toast.error(e.message || 'Update failed');
     } finally {
       setBusy(null);
     }

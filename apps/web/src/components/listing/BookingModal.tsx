@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 
@@ -59,9 +60,11 @@ export function BookingModal({
         contactPhone: phone,
         notes,
       });
+      toast.success('Booking confirmed!');
       router.push(`/booking/${booking.reference}`);
     } catch (e: any) {
       setErr(e.message || 'Booking failed');
+      toast.error(e.message || 'Booking failed');
     } finally {
       setLoading(false);
     }
@@ -86,7 +89,13 @@ export function BookingModal({
             className="rounded p-1 text-muted hover:bg-surface"
             aria-label="Close"
           >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -187,12 +196,11 @@ export function BookingModal({
             />
           </Field>
 
-          {/* Total */}
           <div className="rounded-tile border border-line bg-surface p-3">
             <div className="flex justify-between text-sm text-muted">
               <span>
-                {listing.priceFrom.currency} {listing.priceFrom.amount.toLocaleString()} × {adults}{' '}
-                adult{adults > 1 ? 's' : ''}
+                {listing.priceFrom.currency} {listing.priceFrom.amount.toLocaleString()} ×{' '}
+                {adults} adult{adults > 1 ? 's' : ''}
               </span>
               <span>
                 {listing.priceFrom.currency} {total.toLocaleString()}

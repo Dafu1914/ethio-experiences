@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 
@@ -55,8 +56,9 @@ function AdminListingsInner() {
       setListings((prev) =>
         prev.map((l) => (l._id === id ? { ...l, status: newStatus } : l))
       );
+      toast.success(`Listing ${newStatus}`);
     } catch (e: any) {
-      alert(e.message || 'Update failed');
+      toast.error(e.message || 'Update failed');
     } finally {
       setBusy(null);
     }
@@ -68,8 +70,9 @@ function AdminListingsInner() {
     try {
       await api.delete(`/admin/listings/${id}`);
       setListings((prev) => prev.filter((l) => l._id !== id));
+      toast.success('Listing deleted');
     } catch (e: any) {
-      alert(e.message || 'Delete failed');
+      toast.error(e.message || 'Delete failed');
     } finally {
       setBusy(null);
     }
@@ -89,7 +92,6 @@ function AdminListingsInner() {
         </Link>
       </div>
 
-      {/* Filter pills */}
       <div className="mb-4 flex flex-wrap gap-2">
         {(['all', 'pending', 'published', 'archived', 'draft'] as const).map((s) => (
           <button
@@ -117,7 +119,6 @@ function AdminListingsInner() {
               key={l._id}
               className="flex flex-col gap-4 rounded-card border border-line bg-white p-4 sm:flex-row"
             >
-              {/* Image */}
               <div className="aspect-[16/10] w-full shrink-0 overflow-hidden rounded-tile bg-surface sm:w-40">
                 {l.images?.[0]?.url && (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -129,7 +130,6 @@ function AdminListingsInner() {
                 )}
               </div>
 
-              {/* Details */}
               <div className="flex flex-1 flex-col justify-between">
                 <div>
                   <div className="flex items-start justify-between gap-4">
@@ -154,8 +154,7 @@ function AdminListingsInner() {
                       {l.priceFrom.amount.toLocaleString()}
                     </span>
                     <span>
-                      <strong className="text-ink">Vendor:</strong>{' '}
-                      {l.vendorId?.email || '—'}
+                      <strong className="text-ink">Vendor:</strong> {l.vendorId?.email || '—'}
                     </span>
                     <span>
                       <strong className="text-ink">Created:</strong>{' '}

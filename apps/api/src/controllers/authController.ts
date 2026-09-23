@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User';
 import { signAccess, signRefresh, verifyRefresh } from '../utils/jwt';
-import { sendVerification, sendReset } from '../utils/email';
+import { sendVerification, sendReset, sendWelcome } from '../utils/email';
 
 const REFRESH_COOKIE = 'refresh_token';
 const cookieOpts = {
@@ -33,6 +33,7 @@ export const signup = async (req: Request, res: Response) => {
   });
 
   await sendVerification(user.email, emailVerificationToken);
+  await sendWelcome(user.email, user.name);
 
   const access = signAccess(user.id, user.role);
   const refresh = signRefresh(user.id);

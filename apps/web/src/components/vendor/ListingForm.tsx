@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { api, uploadFiles } from '@/lib/api';
 
 const CITIES = [
@@ -99,8 +100,10 @@ export function ListingForm({
     try {
       const urls = await uploadFiles(Array.from(files));
       setImages((prev) => [...prev, ...urls.map(toAbsolute)]);
+      toast.success(`${urls.length} image${urls.length > 1 ? 's' : ''} uploaded`);
     } catch (e: any) {
       setErr(e.message || 'Upload failed');
+      toast.error(e.message || 'Upload failed');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -159,13 +162,16 @@ export function ListingForm({
 
       if (mode === 'create') {
         await api.post('/listings', payload);
+        toast.success('Listing created');
       } else if (initial?._id) {
         await api.patch(`/listings/${initial._id}`, payload);
+        toast.success('Listing saved');
       }
 
       router.push('/vendor/listings');
     } catch (e: any) {
       setErr(e.message || 'Failed to save listing');
+      toast.error(e.message || 'Failed to save');
     } finally {
       setBusy(false);
     }

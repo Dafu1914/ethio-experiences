@@ -12,7 +12,6 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-white">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
-        {/* Logo */}
         <Link
           href="/"
           className="text-xl font-extrabold tracking-tight text-brand-orange"
@@ -20,12 +19,17 @@ export function Header() {
           ETHIO EXPERIENCES
         </Link>
 
-        {/* Center nav (desktop) */}
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink md:flex">
           <div className="relative group">
             <button className="flex items-center gap-1 py-5 hover:text-brand-blue">
               Places to see
-              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-3 w-3"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
@@ -45,7 +49,13 @@ export function Header() {
           <div className="relative group">
             <button className="flex items-center gap-1 py-5 hover:text-brand-blue">
               Things to do
-              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-3 w-3"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
@@ -75,7 +85,6 @@ export function Header() {
           </Link>
         </nav>
 
-        {/* Right side */}
         <div className="flex items-center gap-2">
           <Link
             href="/search"
@@ -121,6 +130,14 @@ export function Header() {
                       Vendor dashboard
                     </Link>
                   )}
+                  {user.role === 'admin' && (
+                    <Link
+                      href="/admin"
+                      className="block rounded px-3 py-2 text-sm text-ink hover:bg-surface"
+                    >
+                      Admin panel
+                    </Link>
+                  )}
                   <button
                     onClick={async () => {
                       await logout();
@@ -150,13 +167,18 @@ export function Header() {
             </>
           )}
 
-          {/* Mobile menu toggle */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="ml-1 rounded p-2 text-ink hover:bg-surface md:hidden"
             aria-label="Menu"
           >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <line x1="3" y1="6" x2="21" y2="6" />
               <line x1="3" y1="12" x2="21" y2="12" />
               <line x1="3" y1="18" x2="21" y2="18" />
@@ -165,7 +187,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div className="border-t border-line bg-white px-6 py-4 md:hidden">
           <Link href="/search" className="block py-2 text-sm font-medium text-ink">
@@ -189,6 +210,50 @@ export function Header() {
           >
             Culture
           </Link>
+
+          <div className="my-3 border-t border-line" />
+
+          {user ? (
+            <>
+              <Link href="/account" className="block py-2 text-sm font-medium text-ink">
+                My account
+              </Link>
+              <Link
+                href="/account/bookings"
+                className="block py-2 text-sm font-medium text-ink"
+              >
+                My bookings
+              </Link>
+              {(user.role === 'vendor' || user.role === 'admin') && (
+                <Link href="/vendor" className="block py-2 text-sm font-medium text-ink">
+                  Vendor dashboard
+                </Link>
+              )}
+              {user.role === 'admin' && (
+                <Link href="/admin" className="block py-2 text-sm font-medium text-ink">
+                  Admin panel
+                </Link>
+              )}
+              <button
+                onClick={async () => {
+                  await logout();
+                  window.location.href = '/';
+                }}
+                className="block w-full py-2 text-left text-sm font-medium text-danger"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="block py-2 text-sm font-medium text-ink">
+                Log in
+              </Link>
+              <Link href="/signup" className="block py-2 text-sm font-medium text-brand-blue">
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       )}
     </header>
