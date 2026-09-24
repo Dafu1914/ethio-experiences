@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { imageUrl } from '@/lib/api';
+import { useLocale } from '@/context/LocaleContext';
+import { formatPrice } from '@/i18n/strings';
 
 export type ListingCardData = {
   _id: string;
@@ -29,7 +30,8 @@ function formatDuration(mins: number) {
 }
 
 export function ListingCard({ listing }: { listing: ListingCardData }) {
-  const img = imageUrl(listing.images?.[0]?.url);
+  const { currency } = useLocale();
+  const img = listing.images?.[0]?.url || '';
 
   return (
     <Link
@@ -98,7 +100,7 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           <span className="text-[13px] text-muted">
             From{' '}
             <span className="text-[15px] font-bold text-ink">
-              {listing.priceFrom.currency} {listing.priceFrom.amount.toLocaleString()}
+              {formatPrice(listing.priceFrom.amount, currency)}
             </span>
           </span>
         </div>

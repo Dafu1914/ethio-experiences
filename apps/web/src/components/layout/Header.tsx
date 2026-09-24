@@ -3,11 +3,17 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useLocale } from '@/context/LocaleContext';
+import { LocaleModal } from './LocaleModal';
+import { useT } from '@/i18n/useT';
 
 export function Header() {
   const { user, logout } = useAuth();
+  const { language, currency } = useLocale();
+  const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [localeOpen, setLocaleOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-white">
@@ -22,7 +28,7 @@ export function Header() {
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink md:flex">
           <div className="relative group">
             <button className="flex items-center gap-1 py-5 hover:text-brand-blue">
-              Places to see
+              {t('nav.places')}
               <svg
                 viewBox="0 0 24 24"
                 className="h-3 w-3"
@@ -48,7 +54,7 @@ export function Header() {
 
           <div className="relative group">
             <button className="flex items-center gap-1 py-5 hover:text-brand-blue">
-              Things to do
+              {t('nav.things')}
               <svg
                 viewBox="0 0 24 24"
                 className="h-3 w-3"
@@ -81,7 +87,7 @@ export function Header() {
           </div>
 
           <Link href="/search" className="py-5 hover:text-brand-blue">
-            All experiences
+            {t('nav.all')}
           </Link>
         </nav>
 
@@ -90,8 +96,28 @@ export function Header() {
             href="/search"
             className="hidden rounded-pill border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-surface md:inline-flex"
           >
-            Search
+            {t('nav.search')}
           </Link>
+
+          {/* Language / Currency switcher */}
+          <button
+            onClick={() => setLocaleOpen(true)}
+            className="hidden items-center gap-2 rounded-pill border border-line px-3 py-2 text-xs font-semibold text-ink hover:bg-surface md:inline-flex"
+            aria-label="Change language and currency"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </svg>
+            {language.toUpperCase()} / {currency}
+          </button>
 
           {user ? (
             <div className="relative">
@@ -114,20 +140,32 @@ export function Header() {
                     href="/account"
                     className="block rounded px-3 py-2 text-sm text-ink hover:bg-surface"
                   >
-                    My account
+                    {t('nav.account')}
+                  </Link>
+                  <Link
+                    href="/account/settings"
+                    className="block rounded px-3 py-2 text-sm text-ink hover:bg-surface"
+                  >
+                    {t('nav.settings')}
                   </Link>
                   <Link
                     href="/account/bookings"
                     className="block rounded px-3 py-2 text-sm text-ink hover:bg-surface"
                   >
-                    My bookings
+                    {t('nav.bookings')}
+                  </Link>
+                  <Link
+                    href="/account/reviews"
+                    className="block rounded px-3 py-2 text-sm text-ink hover:bg-surface"
+                  >
+                    {t('nav.reviews')}
                   </Link>
                   {(user.role === 'vendor' || user.role === 'admin') && (
                     <Link
                       href="/vendor"
                       className="block rounded px-3 py-2 text-sm text-ink hover:bg-surface"
                     >
-                      Vendor dashboard
+                      {t('nav.vendor')}
                     </Link>
                   )}
                   {user.role === 'admin' && (
@@ -135,7 +173,7 @@ export function Header() {
                       href="/admin"
                       className="block rounded px-3 py-2 text-sm text-ink hover:bg-surface"
                     >
-                      Admin panel
+                      {t('nav.admin')}
                     </Link>
                   )}
                   <button
@@ -145,7 +183,7 @@ export function Header() {
                     }}
                     className="block w-full rounded px-3 py-2 text-left text-sm text-danger hover:bg-surface"
                   >
-                    Log out
+                    {t('nav.logout')}
                   </button>
                 </div>
               )}
@@ -156,13 +194,13 @@ export function Header() {
                 href="/login"
                 className="hidden rounded-pill border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-surface md:inline-flex"
               >
-                Log in
+                {t('nav.login')}
               </Link>
               <Link
                 href="/signup"
                 className="rounded-pill bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:bg-brand-blueHover"
               >
-                Sign up
+                {t('nav.signup')}
               </Link>
             </>
           )}
@@ -190,7 +228,7 @@ export function Header() {
       {menuOpen && (
         <div className="border-t border-line bg-white px-6 py-4 md:hidden">
           <Link href="/search" className="block py-2 text-sm font-medium text-ink">
-            All experiences
+            {t('nav.all')}
           </Link>
           <Link
             href="/search?category=tour"
@@ -213,25 +251,61 @@ export function Header() {
 
           <div className="my-3 border-t border-line" />
 
+          {/* Locale on mobile */}
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              setLocaleOpen(true);
+            }}
+            className="flex w-full items-center gap-2 py-2 text-left text-sm font-medium text-ink"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </svg>
+            {language.toUpperCase()} / {currency}
+          </button>
+
+          <div className="my-3 border-t border-line" />
+
           {user ? (
             <>
               <Link href="/account" className="block py-2 text-sm font-medium text-ink">
-                My account
+                {t('nav.account')}
+              </Link>
+              <Link
+                href="/account/settings"
+                className="block py-2 text-sm font-medium text-ink"
+              >
+                {t('nav.settings')}
               </Link>
               <Link
                 href="/account/bookings"
                 className="block py-2 text-sm font-medium text-ink"
               >
-                My bookings
+                {t('nav.bookings')}
+              </Link>
+              <Link
+                href="/account/reviews"
+                className="block py-2 text-sm font-medium text-ink"
+              >
+                {t('nav.reviews')}
               </Link>
               {(user.role === 'vendor' || user.role === 'admin') && (
                 <Link href="/vendor" className="block py-2 text-sm font-medium text-ink">
-                  Vendor dashboard
+                  {t('nav.vendor')}
                 </Link>
               )}
               {user.role === 'admin' && (
                 <Link href="/admin" className="block py-2 text-sm font-medium text-ink">
-                  Admin panel
+                  {t('nav.admin')}
                 </Link>
               )}
               <button
@@ -241,21 +315,23 @@ export function Header() {
                 }}
                 className="block w-full py-2 text-left text-sm font-medium text-danger"
               >
-                Log out
+                {t('nav.logout')}
               </button>
             </>
           ) : (
             <>
               <Link href="/login" className="block py-2 text-sm font-medium text-ink">
-                Log in
+                {t('nav.login')}
               </Link>
               <Link href="/signup" className="block py-2 text-sm font-medium text-brand-blue">
-                Sign up
+                {t('nav.signup')}
               </Link>
             </>
           )}
         </div>
       )}
+
+      <LocaleModal open={localeOpen} onClose={() => setLocaleOpen(false)} />
     </header>
   );
 }

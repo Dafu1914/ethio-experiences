@@ -9,6 +9,7 @@ import listingRoutes from './routes/listingRoutes';
 import bookingRoutes from './routes/bookingRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import adminRoutes from './routes/adminRoutes';
+import reviewRoutes from './routes/reviewRoutes';
 
 const app = express();
 
@@ -24,7 +25,7 @@ app.use('/api/listings', listingRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/admin', adminRoutes);
-
+app.use('/api/reviews', reviewRoutes);
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
 mongoose

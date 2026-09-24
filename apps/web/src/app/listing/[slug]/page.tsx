@@ -4,6 +4,7 @@ import { fetchListing } from '@/lib/server-api';
 import { MediaMosaic } from '@/components/listing/MediaMosaic';
 import { BookingCard } from '@/components/listing/BookingCard';
 import { SectionHeading } from '@/components/listing/SectionHeading';
+import { ReviewsSection } from '@/components/listing/ReviewsSection';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,33 +31,16 @@ export default async function ListingPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  console.log('[page] params promise received');
-
-  const resolved = await params;
-  console.log('[page] resolved params:', JSON.stringify(resolved));
-
-  const { slug } = resolved;
-  console.log('[page] slug:', slug);
-
-  if (!slug) {
-    console.error('[page] no slug!');
-    notFound();
-  }
+  const { slug } = await params;
 
   let listing: any = null;
   try {
     listing = await fetchListing(slug);
-    console.log('[page] listing loaded:', listing?.slug);
-  } catch (err: any) {
-    console.error('[page] fetchListing threw:', err?.message);
-    console.error('[page] full error:', err);
+  } catch {
     notFound();
   }
 
-  if (!listing) {
-    console.error('[page] listing empty, calling notFound');
-    notFound();
-  }
+  if (!listing) notFound();
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-8">
@@ -185,12 +169,20 @@ export default async function ListingPage({
             </>
           )}
 
-          <SectionHeading>Cancellation policy</SectionHeading>
+                 <SectionHeading>Cancellation policy</SectionHeading>
           <p className="text-[15px] text-body">{policyLabel(listing.cancellationPolicy)}</p>
         </div>
 
         <BookingCard listing={listing} />
       </div>
+
+      {/* Reviews — full width, below both columns */}
+      <ReviewsSection
+        listingSlug={listing.slug}
+        listingId={listing._id}
+        averageRating={listing.rating?.avg || 0}
+        reviewCount={listing.rating?.count || 0}
+      />
     </main>
   );
 }

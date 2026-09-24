@@ -151,6 +151,33 @@ export const becomeVendor = async (req: Request, res: Response) => {
   res.json({ user: publicUser(user) });
 };
 
+// STEP 89 — change password (logged in)
+export const changePassword = async (req: Request, res: Response) => {
+  const user = await User.findById(req.user!._id).select('+passwordHash');
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Missing fields' });
+  }
+  if (newPassword.length < 8) {
+    return res.status(400).json({ error: 'New password must be at least 8 characters' });
+  }
+  if (currentPassword === newPassword) {
+    return res.status(400).json({ error: 'New password must be different' });
+  }
+
+  const ok = await user.comparePassword(currentPassword);
+  if (!ok) return res.status(401).json({ error: 'Current password is incorrect' });
+
+  user.passwordHash = await bcrypt.hash(newPassword, 12);
+  user.refreshTokens = []; // log out all other sessions
+  await user.save();
+
+  res.json({ ok: true });
+};
+
 function publicUser(u: any) {
   return {
     id: u.id,

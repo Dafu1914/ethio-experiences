@@ -1,0 +1,213 @@
+import { Language, Currency } from '@/context/LocaleContext';
+
+export const STRINGS: Record<Language, Record<string, string>> = {
+  en: {
+    'nav.places': 'Places to see',
+    'nav.things': 'Things to do',
+    'nav.all': 'All experiences',
+    'nav.search': 'Search',
+    'nav.login': 'Log in',
+    'nav.signup': 'Sign up',
+    'nav.logout': 'Log out',
+    'nav.account': 'My account',
+    'nav.settings': 'Account settings',
+    'nav.bookings': 'My bookings',
+    'nav.reviews': 'My reviews',
+    'nav.vendor': 'Vendor dashboard',
+    'nav.admin': 'Admin panel',
+
+    'hero.title': 'Experiences worth traveling for',
+    'hero.placeholder': 'Search places or activities',
+    'hero.anytime': 'Anytime',
+    'hero.participant': '1 participant',
+    'hero.search': 'Search',
+
+    'home.popular': 'Popular experiences',
+    'home.viewAll': 'View all experiences',
+    'home.experiences': 'experiences',
+
+    'listing.about': 'About this experience',
+    'listing.highlights': 'Highlights',
+    'listing.included': "What's included",
+    'listing.notIncluded': 'Not included',
+    'listing.meeting': 'Meeting point',
+    'listing.cancellation': 'Cancellation policy',
+    'listing.reviews': 'Reviews',
+    'listing.freeCancel24': 'Free cancellation up to 24 hours before',
+    'listing.freeCancel48': 'Free cancellation up to 48 hours before',
+    'listing.nonRefundable': 'Non-refundable',
+    'listing.bookNow': 'Check availability',
+    'listing.from': 'From',
+    'listing.perPerson': 'per person',
+    'listing.duration': 'Duration',
+    'listing.groupSize': 'Group size',
+    'listing.languages': 'Languages',
+    'listing.category': 'Category',
+    'listing.provider': 'Provider',
+    'listing.reviewsCount': 'reviews',
+    'listing.writeReview': 'Write a review',
+    'listing.beFirst': 'Be the first to review this experience.',
+    'listing.logInToReview': 'to leave a review.',
+
+    'booking.title': 'Book this experience',
+    'booking.date': 'Date',
+    'booking.time': 'Time',
+    'booking.adults': 'Adults',
+    'booking.children': 'Children',
+    'booking.name': 'Full name',
+    'booking.email': 'Email',
+    'booking.phone': 'Phone (optional)',
+    'booking.notes': 'Notes (optional)',
+    'booking.total': 'Total',
+    'booking.confirm': 'Confirm booking',
+    'booking.loginFirst': "You'll be asked to log in before confirming.",
+  },
+
+  am: {
+    'nav.places': 'የሚጎበኙ ቦታዎች',
+    'nav.things': 'የሚሰሩ ነገሮች',
+    'nav.all': 'ሁሉም ተሞክሮዎች',
+    'nav.search': 'ፈልግ',
+    'nav.login': 'ግባ',
+    'nav.signup': 'ተመዝገብ',
+    'nav.logout': 'ውጣ',
+    'nav.account': 'የእኔ አካውንት',
+    'nav.settings': 'የአካውንት ቅንብሮች',
+    'nav.bookings': 'የእኔ ቦታ ማስያዣዎች',
+    'nav.reviews': 'የእኔ ግምገማዎች',
+    'nav.vendor': 'የሻጭ ዳሽቦርድ',
+    'nav.admin': 'የአስተዳዳሪ ፓነል',
+
+    'hero.title': 'ለጉዞ የሚገቡ ተሞክሮዎች',
+    'hero.placeholder': 'ቦታዎችን ወይም እንቅስቃሴዎችን ይፈልጉ',
+    'hero.anytime': 'በማንኛውም ጊዜ',
+    'hero.participant': '1 ተሳታፊ',
+    'hero.search': 'ፈልግ',
+
+    'home.popular': 'ተወዳጅ ተሞክሮዎች',
+    'home.viewAll': 'ሁሉንም ተሞክሮዎች ይመልከቱ',
+    'home.experiences': 'ተሞክሮዎች',
+
+    'listing.about': 'ስለዚህ ተሞክሮ',
+    'listing.highlights': 'ዋና ዋና ነጥቦች',
+    'listing.included': 'የተካተቱ',
+    'listing.notIncluded': 'ያልተካተቱ',
+    'listing.meeting': 'የመገናኛ ቦታ',
+    'listing.cancellation': 'የስረዛ ፖሊሲ',
+    'listing.reviews': 'ግምገማዎች',
+    'listing.freeCancel24': 'ከ24 ሰዓት በፊት ነፃ ስረዛ',
+    'listing.freeCancel48': 'ከ48 ሰዓት በፊት ነፃ ስረዛ',
+    'listing.nonRefundable': 'የማይመለስ',
+    'listing.bookNow': 'ተገኝነትን ያረጋግጡ',
+    'listing.from': 'ከ',
+    'listing.perPerson': 'በአንድ ሰው',
+    'listing.duration': 'ጊዜ',
+    'listing.groupSize': 'የቡድን መጠን',
+    'listing.languages': 'ቋንቋዎች',
+    'listing.category': 'ምድብ',
+    'listing.provider': 'አቅራቢ',
+    'listing.reviewsCount': 'ግምገማዎች',
+    'listing.writeReview': 'ግምገማ ይጻፉ',
+    'listing.beFirst': 'የመጀመሪያው ግምገማ ይሁኑ።',
+    'listing.logInToReview': 'ግምገማ ለመተው።',
+
+    'booking.title': 'ይህን ተሞክሮ ይያዙ',
+    'booking.date': 'ቀን',
+    'booking.time': 'ሰዓት',
+    'booking.adults': 'አዋቂዎች',
+    'booking.children': 'ልጆች',
+    'booking.name': 'ሙሉ ስም',
+    'booking.email': 'ኢሜይል',
+    'booking.phone': 'ስልክ (አማራጭ)',
+    'booking.notes': 'ማስታወሻ (አማራጭ)',
+    'booking.total': 'ድምር',
+    'booking.confirm': 'ቦታ ያረጋግጡ',
+    'booking.loginFirst': 'ከማረጋገጥ በፊት እንዲገቡ ይጠየቃሉ።',
+  },
+
+  om: {
+    'nav.places': 'Bakkeewwan daawwatamuu',
+    'nav.things': 'Waan hojjetamu',
+    'nav.all': 'Muuxannoo hunda',
+    'nav.search': 'Barbaadi',
+    'nav.login': 'Seeni',
+    'nav.signup': 'Galmaa\'i',
+    'nav.logout': 'Ba\'i',
+    'nav.account': 'Herrega koo',
+    'nav.settings': 'Qindaa\'ina herregaa',
+    'nav.bookings': 'Qabsiisawwan koo',
+    'nav.reviews': 'Gamaaggama koo',
+    'nav.vendor': 'Daashboordii gurguraa',
+    'nav.admin': 'Paanaalii bulchaa',
+
+    'hero.title': 'Muuxannoo imalaaf mijataa',
+    'hero.placeholder': 'Bakkeewwan ykn sochiiwwan barbaadi',
+    'hero.anytime': 'Yeroo kamiyyuu',
+    'hero.participant': 'Hirmaataa 1',
+    'hero.search': 'Barbaadi',
+
+    'home.popular': 'Muuxannoo jaallatamaa',
+    'home.viewAll': 'Muuxannoo hunda ilaali',
+    'home.experiences': 'muuxannoowwan',
+
+    'listing.about': 'Waa\'ee muuxannoo kanaa',
+    'listing.highlights': 'Qabiyyee ijoo',
+    'listing.included': 'Kan dabalame',
+    'listing.notIncluded': 'Kan hin dabalamne',
+    'listing.meeting': 'Bakka walargii',
+    'listing.cancellation': 'Imaammata haquu',
+    'listing.reviews': 'Gamaaggamoota',
+    'listing.freeCancel24': 'Sa\'aatii 24 dura haquu bilisaa',
+    'listing.freeCancel48': 'Sa\'aatii 48 dura haquu bilisaa',
+    'listing.nonRefundable': 'Deebi\'uu kan hin dandeessisu',
+    'listing.bookNow': 'Argama mirkaneessi',
+    'listing.from': 'Irraa',
+    'listing.perPerson': 'nama tokkoof',
+    'listing.duration': 'Yeroo',
+    'listing.groupSize': 'Baay\'ina garee',
+    'listing.languages': 'Afaanota',
+    'listing.category': 'Ramaddii',
+    'listing.provider': 'Dhiyeessaa',
+    'listing.reviewsCount': 'gamaaggamoota',
+    'listing.writeReview': 'Gamaaggama barreessi',
+    'listing.beFirst': 'Gamaaggama jalqabaa ta\'i.',
+    'listing.logInToReview': 'gamaaggama dhiisuuf.',
+
+    'booking.title': 'Muuxannoo kana qabadhu',
+    'booking.date': 'Guyyaa',
+    'booking.time': 'Yeroo',
+    'booking.adults': 'Ga\'eelota',
+    'booking.children': 'Ijoollee',
+    'booking.name': 'Maqaa guutuu',
+    'booking.email': 'Imeelii',
+    'booking.phone': 'Bilbila (filannoo)',
+    'booking.notes': 'Yaadannoo (filannoo)',
+    'booking.total': 'Waliigala',
+    'booking.confirm': 'Qabsiisa mirkaneessi',
+    'booking.loginFirst': 'Mirkaneessuu dura seenuu ni gaafatama.',
+  },
+};
+
+// Static exchange rates (update later with a live API)
+export const FX_RATES: Record<Currency, number> = {
+  ETB: 1,
+  USD: 1 / 57,   // ~57 ETB per USD (approx)
+  EUR: 1 / 62,   // ~62 ETB per EUR (approx)
+};
+
+export const CURRENCY_SYMBOL: Record<Currency, string> = {
+  ETB: 'ETB',
+  USD: '$',
+  EUR: '€',
+};
+
+export function formatPrice(amountETB: number, currency: Currency) {
+  const converted = amountETB * FX_RATES[currency];
+  const symbol = CURRENCY_SYMBOL[currency];
+  const rounded = currency === 'ETB' ? Math.round(converted) : Math.round(converted * 100) / 100;
+  return `${symbol} ${rounded.toLocaleString()}`;
+}
+
+export function t(lang: Language, key: string): string {
+  return STRINGS[lang]?.[key] ?? STRINGS.en[key] ?? key;
+}

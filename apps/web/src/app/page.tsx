@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { fetchListings } from '@/lib/server-api';
 import { ListingCard, ListingCardData } from '@/components/ui/ListingCard';
+import { Hero } from '@/components/home/Hero';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,20 +16,12 @@ export default async function Home() {
   } catch {}
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-12">
+    <main>
       {/* Hero */}
-      <section className="mb-12">
-        <h1 className="text-4xl font-extrabold leading-tight text-ink md:text-5xl">
-          Discover Ethiopia
-        </h1>
-        <p className="mt-3 max-w-2xl text-muted">
-          Book unforgettable tours, treks, and cultural experiences — from the rock churches of
-          Lalibela to the peaks of the Simien Mountains.
-        </p>
-      </section>
+      <Hero />
 
-      {/* Listings grid */}
-      <section>
+      {/* Listings */}
+      <section className="mx-auto max-w-6xl px-6 py-12">
         <div className="mb-5 flex items-end justify-between">
           <h2 className="text-2xl font-extrabold text-ink">Popular experiences</h2>
           <span className="text-sm text-muted">{total} experiences</span>

@@ -15,5 +15,6 @@ router.post('/reset-password', limiter, c.resetPassword);
 router.get('/verify-email', c.verifyEmail);
 router.get('/me', requireAuth, c.me);
 router.post('/become-vendor', requireAuth, c.becomeVendor);
+router.patch('/password', requireAuth, c.changePassword);
 
 export default router;
