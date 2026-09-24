@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLocale } from '@/context/LocaleContext';
 import { LocaleModal } from './LocaleModal';
@@ -10,6 +11,7 @@ import { useT } from '@/i18n/useT';
 export function Header() {
   const { user, logout } = useAuth();
   const { language, currency } = useLocale();
+  const pathname = usePathname();
   const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -86,7 +88,12 @@ export function Header() {
             </div>
           </div>
 
-          <Link href="/search" className="py-5 hover:text-brand-blue">
+          <Link
+            href="/search"
+            className={`py-5 hover:text-brand-blue ${
+              pathname === '/search' ? 'font-semibold text-brand-blue' : ''
+            }`}
+          >
             {t('nav.all')}
           </Link>
         </nav>
@@ -99,7 +106,6 @@ export function Header() {
             {t('nav.search')}
           </Link>
 
-          {/* Language / Currency switcher */}
           <button
             onClick={() => setLocaleOpen(true)}
             className="hidden items-center gap-2 rounded-pill border border-line px-3 py-2 text-xs font-semibold text-ink hover:bg-surface md:inline-flex"
@@ -251,7 +257,6 @@ export function Header() {
 
           <div className="my-3 border-t border-line" />
 
-          {/* Locale on mobile */}
           <button
             onClick={() => {
               setMenuOpen(false);

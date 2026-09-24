@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { useLocale } from '@/context/LocaleContext';
 import { formatPrice } from '@/i18n/strings';
 
@@ -31,7 +33,16 @@ function formatDuration(mins: number) {
 
 export function ListingCard({ listing }: { listing: ListingCardData }) {
   const { currency } = useLocale();
+  const [saved, setSaved] = useState(false);
   const img = listing.images?.[0]?.url || '';
+
+  const toggleSave = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setSaved((v) => {
+      toast.success(!v ? 'Added to wishlist' : 'Removed from wishlist');
+      return !v;
+    });
+  };
 
   return (
     <Link
@@ -45,6 +56,10 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
             src={img}
             alt={listing.images[0].alt || listing.title}
             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            onError={(e) => {
+              const el = e.target as HTMLImageElement;
+              el.style.opacity = '0';
+            }}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-xs text-muted">
@@ -62,14 +77,12 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           type="button"
           aria-label="Save to wishlist"
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-ink shadow transition hover:bg-white"
-          onClick={(e) => {
-            e.preventDefault();
-          }}
+          onClick={toggleSave}
         >
           <svg
             viewBox="0 0 24 24"
-            className="h-4 w-4"
-            fill="none"
+            className={`h-4 w-4 transition ${saved ? 'fill-[#FF5533] text-[#FF5533]' : ''}`}
+            fill={saved ? 'currentColor' : 'none'}
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"

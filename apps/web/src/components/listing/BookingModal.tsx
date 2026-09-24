@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { useT } from '@/i18n/useT';
 
 export type BookingModalListing = {
   _id: string;
@@ -23,6 +24,7 @@ export function BookingModal({
 }) {
   const { user } = useAuth();
   const router = useRouter();
+  const t = useT();
 
   const [date, setDate] = useState('');
   const [timeSlot, setTimeSlot] = useState('09:00');
@@ -60,7 +62,7 @@ export function BookingModal({
         contactPhone: phone,
         notes,
       });
-      toast.success('Booking confirmed!');
+      toast.success(t('booking.confirmed'));
       router.push(`/booking/${booking.reference}`);
     } catch (e: any) {
       setErr(e.message || 'Booking failed');
@@ -81,7 +83,7 @@ export function BookingModal({
       >
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-extrabold text-ink">Book this experience</h2>
+            <h2 className="text-xl font-extrabold text-ink">{t('booking.title')}</h2>
             <p className="mt-1 line-clamp-1 text-sm text-muted">{listing.title}</p>
           </div>
           <button
@@ -104,13 +106,13 @@ export function BookingModal({
 
         {!user && (
           <div className="mb-4 rounded-tile bg-brand-blue/5 p-3 text-sm text-brand-blue">
-            You&apos;ll be asked to log in before confirming.
+            {t('booking.loginFirst')}
           </div>
         )}
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Date">
+            <Field label={t('booking.date')}>
               <input
                 type="date"
                 required
@@ -121,7 +123,7 @@ export function BookingModal({
               />
             </Field>
 
-            <Field label="Time">
+            <Field label={t('booking.time')}>
               <select
                 value={timeSlot}
                 onChange={(e) => setTimeSlot(e.target.value)}
@@ -137,7 +139,7 @@ export function BookingModal({
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Adults">
+            <Field label={t('booking.adults')}>
               <input
                 type="number"
                 min={1}
@@ -146,7 +148,7 @@ export function BookingModal({
                 className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-brand-blue"
               />
             </Field>
-            <Field label="Children">
+            <Field label={t('booking.children')}>
               <input
                 type="number"
                 min={0}
@@ -157,7 +159,7 @@ export function BookingModal({
             </Field>
           </div>
 
-          <Field label="Full name">
+          <Field label={t('booking.name')}>
             <input
               type="text"
               required
@@ -167,7 +169,7 @@ export function BookingModal({
             />
           </Field>
 
-          <Field label="Email">
+          <Field label={t('booking.email')}>
             <input
               type="email"
               required
@@ -177,7 +179,7 @@ export function BookingModal({
             />
           </Field>
 
-          <Field label="Phone (optional)">
+          <Field label={t('booking.phone')}>
             <input
               type="tel"
               value={phone}
@@ -187,7 +189,7 @@ export function BookingModal({
             />
           </Field>
 
-          <Field label="Notes (optional)">
+          <Field label={t('booking.notes')}>
             <textarea
               rows={2}
               value={notes}
@@ -200,14 +202,14 @@ export function BookingModal({
             <div className="flex justify-between text-sm text-muted">
               <span>
                 {listing.priceFrom.currency} {listing.priceFrom.amount.toLocaleString()} ×{' '}
-                {adults} adult{adults > 1 ? 's' : ''}
+                {adults} {t('booking.adults').toLowerCase()}
               </span>
               <span>
                 {listing.priceFrom.currency} {total.toLocaleString()}
               </span>
             </div>
             <div className="mt-2 flex justify-between border-t border-line pt-2 text-base font-bold text-ink">
-              <span>Total</span>
+              <span>{t('booking.total')}</span>
               <span>
                 {listing.priceFrom.currency} {total.toLocaleString()}
               </span>
@@ -221,7 +223,11 @@ export function BookingModal({
             disabled={loading}
             className="w-full rounded-pill bg-brand-blue py-3 font-semibold text-white transition hover:bg-brand-blueHover disabled:opacity-50"
           >
-            {loading ? 'Booking…' : user ? 'Confirm booking' : 'Log in & book'}
+            {loading
+              ? t('booking.booking')
+              : user
+              ? t('booking.confirm')
+              : t('booking.confirmAndLogin')}
           </button>
         </form>
       </div>

@@ -2,6 +2,7 @@ import { Language, Currency } from '@/context/LocaleContext';
 
 export const STRINGS: Record<Language, Record<string, string>> = {
   en: {
+    // Navigation
     'nav.places': 'Places to see',
     'nav.things': 'Things to do',
     'nav.all': 'All experiences',
@@ -16,16 +17,50 @@ export const STRINGS: Record<Language, Record<string, string>> = {
     'nav.vendor': 'Vendor dashboard',
     'nav.admin': 'Admin panel',
 
+    // Hero
     'hero.title': 'Experiences worth traveling for',
     'hero.placeholder': 'Search places or activities',
     'hero.anytime': 'Anytime',
+    'hero.today': 'Today',
+    'hero.tomorrow': 'Tomorrow',
+    'hero.week': 'This week',
+    'hero.month': 'This month',
     'hero.participant': '1 participant',
     'hero.search': 'Search',
 
+    // Home
     'home.popular': 'Popular experiences',
     'home.viewAll': 'View all experiences',
     'home.experiences': 'experiences',
+    'home.empty': 'No experiences yet',
+    'home.emptyHint': 'Check back soon for new tours.',
+    'home.browseAll': 'Browse all',
 
+    // Search page
+    'search.title': 'All experiences',
+    'search.inCity': 'Things to do in',
+    'search.results': 'results',
+    'search.showing': 'Showing',
+    'search.of': 'of',
+    'search.sortBy': 'Sort by',
+    'search.city': 'City',
+    'search.category': 'Category',
+    'search.price': 'Price (ETB)',
+    'search.clearAll': 'Clear all filters',
+    'search.allCities': 'All cities',
+    'search.allCategories': 'All categories',
+    'search.anyPrice': 'Any price',
+    'search.noResults': 'No experiences found.',
+    'search.tryRemove': 'Try removing some filters.',
+
+    // Sort options
+    'sort.popular': 'Popular',
+    'sort.rating': 'Top rated',
+    'sort.priceAsc': 'Price: low to high',
+    'sort.priceDesc': 'Price: high to low',
+    'sort.newest': 'Newest',
+
+    // Listing detail
     'listing.about': 'About this experience',
     'listing.highlights': 'Highlights',
     'listing.included': "What's included",
@@ -48,7 +83,19 @@ export const STRINGS: Record<Language, Record<string, string>> = {
     'listing.writeReview': 'Write a review',
     'listing.beFirst': 'Be the first to review this experience.',
     'listing.logInToReview': 'to leave a review.',
+    'listing.freeCancel': 'Free cancellation',
+    'listing.freeCancelBody': 'Cancel up to 24 hours in advance for a full refund',
+    'listing.payLater': 'Reserve now & pay later',
+    'listing.payLaterBody':
+      "Keep your travel plans flexible — book your spot and pay nothing today",
+    'listing.original': 'Original by Ethio Experiences',
+    'listing.addWishlist': 'Add to wishlist',
+    'listing.share': 'Share',
+    'listing.home': 'Home',
+    'listing.explore': 'Explore',
+    'listing.upTo': 'Up to',
 
+    // Booking modal
     'booking.title': 'Book this experience',
     'booking.date': 'Date',
     'booking.time': 'Time',
@@ -60,10 +107,63 @@ export const STRINGS: Record<Language, Record<string, string>> = {
     'booking.notes': 'Notes (optional)',
     'booking.total': 'Total',
     'booking.confirm': 'Confirm booking',
+    'booking.confirmAndLogin': 'Log in & book',
     'booking.loginFirst': "You'll be asked to log in before confirming.",
+    'booking.booking': 'Booking…',
+    'booking.confirmed': 'Booking confirmed!',
+
+    // Confirmation page
+    'conf.title': 'Booking confirmed!',
+    'conf.sentTo': 'A confirmation email has been sent to',
+    'conf.reference': 'Reference',
+    'conf.experience': 'Your experience',
+    'conf.listingRemoved': 'This listing is no longer available.',
+    'conf.date': 'Date',
+    'conf.time': 'Time',
+    'conf.participants': 'Participants',
+    'conf.status': 'Status',
+    'conf.name': 'Name',
+    'conf.email': 'Email',
+    'conf.total': 'Total',
+    'conf.viewBookings': 'View my bookings',
+    'conf.backHome': 'Back to home',
+
+    // Bookings page
+    'bookings.title': 'My bookings',
+    'bookings.backAccount': 'Back to account',
+    'bookings.empty': 'No bookings yet',
+    'bookings.emptyHint': "When you book experiences, they'll appear here.",
+    'bookings.browse': 'Browse experiences',
+    'bookings.viewVoucher': 'View voucher',
+    'bookings.cancel': 'Cancel',
+    'bookings.confirmed': 'Confirmed',
+    'bookings.cancelled': 'Cancelled',
+    'bookings.listingRemoved': 'Listing removed',
+
+    // Account
+    'account.title': 'My account',
+    'account.name': 'Name',
+    'account.email': 'Email',
+    'account.role': 'Role',
+    'account.language': 'Language',
+    'account.currency': 'Currency',
+    'account.verified': 'Email verified',
+    'account.yes': 'Yes',
+    'account.no': 'No',
+
+    // Common
+    'common.loading': 'Loading…',
+    'common.yes': 'Yes',
+    'common.no': 'No',
+    'common.save': 'Save',
+    'common.cancel': 'Cancel',
+    'common.delete': 'Delete',
+    'common.edit': 'Edit',
+    'common.close': 'Close',
   },
 
   am: {
+    // Navigation
     'nav.places': 'የሚጎበኙ ቦታዎች',
     'nav.things': 'የሚሰሩ ነገሮች',
     'nav.all': 'ሁሉም ተሞክሮዎች',
@@ -78,16 +178,50 @@ export const STRINGS: Record<Language, Record<string, string>> = {
     'nav.vendor': 'የሻጭ ዳሽቦርድ',
     'nav.admin': 'የአስተዳዳሪ ፓነል',
 
+    // Hero
     'hero.title': 'ለጉዞ የሚገቡ ተሞክሮዎች',
     'hero.placeholder': 'ቦታዎችን ወይም እንቅስቃሴዎችን ይፈልጉ',
     'hero.anytime': 'በማንኛውም ጊዜ',
+    'hero.today': 'ዛሬ',
+    'hero.tomorrow': 'ነገ',
+    'hero.week': 'በዚህ ሳምንት',
+    'hero.month': 'በዚህ ወር',
     'hero.participant': '1 ተሳታፊ',
     'hero.search': 'ፈልግ',
 
+    // Home
     'home.popular': 'ተወዳጅ ተሞክሮዎች',
     'home.viewAll': 'ሁሉንም ተሞክሮዎች ይመልከቱ',
     'home.experiences': 'ተሞክሮዎች',
+    'home.empty': 'እስካሁን ተሞክሮዎች የሉም',
+    'home.emptyHint': 'ለአዳዲስ ጉዞዎች በቅርቡ ይመልከቱ።',
+    'home.browseAll': 'ሁሉንም ያስሱ',
 
+    // Search
+    'search.title': 'ሁሉም ተሞክሮዎች',
+    'search.inCity': 'የሚሰሩ ነገሮች በ',
+    'search.results': 'ውጤቶች',
+    'search.showing': 'በማሳየት ላይ',
+    'search.of': 'ከ',
+    'search.sortBy': 'በዚህ ደርድር',
+    'search.city': 'ከተማ',
+    'search.category': 'ምድብ',
+    'search.price': 'ዋጋ (ብር)',
+    'search.clearAll': 'ሁሉንም ማጣሪያዎች አጽዳ',
+    'search.allCities': 'ሁሉም ከተሞች',
+    'search.allCategories': 'ሁሉም ምድቦች',
+    'search.anyPrice': 'ማንኛውም ዋጋ',
+    'search.noResults': 'ተሞክሮዎች አልተገኙም።',
+    'search.tryRemove': 'አንዳንድ ማጣሪያዎችን ለማስወገድ ይሞክሩ።',
+
+    // Sort
+    'sort.popular': 'ተወዳጅ',
+    'sort.rating': 'ከፍተኛ ደረጃ',
+    'sort.priceAsc': 'ዋጋ፡ ከዝቅተኛ ወደ ከፍተኛ',
+    'sort.priceDesc': 'ዋጋ፡ ከከፍተኛ ወደ ዝቅተኛ',
+    'sort.newest': 'አዲስ',
+
+    // Listing detail
     'listing.about': 'ስለዚህ ተሞክሮ',
     'listing.highlights': 'ዋና ዋና ነጥቦች',
     'listing.included': 'የተካተቱ',
@@ -110,7 +244,18 @@ export const STRINGS: Record<Language, Record<string, string>> = {
     'listing.writeReview': 'ግምገማ ይጻፉ',
     'listing.beFirst': 'የመጀመሪያው ግምገማ ይሁኑ።',
     'listing.logInToReview': 'ግምገማ ለመተው።',
+    'listing.freeCancel': 'ነፃ ስረዛ',
+    'listing.freeCancelBody': 'ከ24 ሰዓት በፊት በማስወገድ ሙሉ ተመላሽ ያገኛሉ',
+    'listing.payLater': 'አሁን ያስይዙ በኋላ ይክፈሉ',
+    'listing.payLaterBody': 'የጉዞ እቅድዎን ተጣጣፊ ያድርጉ — ዛሬ ምንም አይክፈሉ',
+    'listing.original': 'በኢትዮ ኤክስፒሪየንስ ኦሪጅናል',
+    'listing.addWishlist': 'ወደ ምኞት ዝርዝር ጨምር',
+    'listing.share': 'አጋራ',
+    'listing.home': 'መነሻ',
+    'listing.explore': 'ያስሱ',
+    'listing.upTo': 'እስከ',
 
+    // Booking modal
     'booking.title': 'ይህን ተሞክሮ ይያዙ',
     'booking.date': 'ቀን',
     'booking.time': 'ሰዓት',
@@ -122,61 +267,159 @@ export const STRINGS: Record<Language, Record<string, string>> = {
     'booking.notes': 'ማስታወሻ (አማራጭ)',
     'booking.total': 'ድምር',
     'booking.confirm': 'ቦታ ያረጋግጡ',
+    'booking.confirmAndLogin': 'ግባና ያስይዙ',
     'booking.loginFirst': 'ከማረጋገጥ በፊት እንዲገቡ ይጠየቃሉ።',
+    'booking.booking': 'በማስያዝ ላይ…',
+    'booking.confirmed': 'ቦታ ተረጋግጧል!',
+
+    // Confirmation
+    'conf.title': 'ቦታ ተረጋግጧል!',
+    'conf.sentTo': 'የማረጋገጫ ኢሜይል ተልኳል ለ',
+    'conf.reference': 'ማጣቀሻ',
+    'conf.experience': 'የእርስዎ ተሞክሮ',
+    'conf.listingRemoved': 'ይህ ዝርዝር ከእንግዲህ አይገኝም።',
+    'conf.date': 'ቀን',
+    'conf.time': 'ሰዓት',
+    'conf.participants': 'ተሳታፊዎች',
+    'conf.status': 'ሁኔታ',
+    'conf.name': 'ስም',
+    'conf.email': 'ኢሜይል',
+    'conf.total': 'ድምር',
+    'conf.viewBookings': 'የእኔ ቦታ ማስያዣዎችን ይመልከቱ',
+    'conf.backHome': 'ወደ መነሻ ተመለስ',
+
+    // Bookings
+    'bookings.title': 'የእኔ ቦታ ማስያዣዎች',
+    'bookings.backAccount': 'ወደ አካውንት ተመለስ',
+    'bookings.empty': 'እስካሁን ቦታ ማስያዣ የለም',
+    'bookings.emptyHint': 'ተሞክሮዎችን ሲያስይዙ እዚህ ይታያሉ።',
+    'bookings.browse': 'ተሞክሮዎችን ያስሱ',
+    'bookings.viewVoucher': 'ቫውቸር ይመልከቱ',
+    'bookings.cancel': 'ሰርዝ',
+    'bookings.confirmed': 'ተረጋግጧል',
+    'bookings.cancelled': 'ተሰርዟል',
+    'bookings.listingRemoved': 'ዝርዝር ተወግዷል',
+
+    // Account
+    'account.title': 'የእኔ አካውንት',
+    'account.name': 'ስም',
+    'account.email': 'ኢሜይል',
+    'account.role': 'ሚና',
+    'account.language': 'ቋንቋ',
+    'account.currency': 'ገንዘብ',
+    'account.verified': 'ኢሜይል ተረጋግጧል',
+    'account.yes': 'አዎ',
+    'account.no': 'አይ',
+
+    // Common
+    'common.loading': 'በመጫን ላይ…',
+    'common.yes': 'አዎ',
+    'common.no': 'አይ',
+    'common.save': 'አስቀምጥ',
+    'common.cancel': 'ሰርዝ',
+    'common.delete': 'አጥፋ',
+    'common.edit': 'አርትዕ',
+    'common.close': 'ዝጋ',
   },
 
   om: {
+    // Navigation
     'nav.places': 'Bakkeewwan daawwatamuu',
     'nav.things': 'Waan hojjetamu',
     'nav.all': 'Muuxannoo hunda',
     'nav.search': 'Barbaadi',
     'nav.login': 'Seeni',
-    'nav.signup': 'Galmaa\'i',
-    'nav.logout': 'Ba\'i',
+    'nav.signup': "Galmaa'i",
+    'nav.logout': "Ba'i",
     'nav.account': 'Herrega koo',
-    'nav.settings': 'Qindaa\'ina herregaa',
+    'nav.settings': "Qindaa'ina herregaa",
     'nav.bookings': 'Qabsiisawwan koo',
     'nav.reviews': 'Gamaaggama koo',
     'nav.vendor': 'Daashboordii gurguraa',
     'nav.admin': 'Paanaalii bulchaa',
 
+    // Hero
     'hero.title': 'Muuxannoo imalaaf mijataa',
     'hero.placeholder': 'Bakkeewwan ykn sochiiwwan barbaadi',
     'hero.anytime': 'Yeroo kamiyyuu',
+    'hero.today': 'Har\'a',
+    'hero.tomorrow': 'Boru',
+    'hero.week': 'Torban kana',
+    'hero.month': 'Ji\'a kana',
     'hero.participant': 'Hirmaataa 1',
     'hero.search': 'Barbaadi',
 
+    // Home
     'home.popular': 'Muuxannoo jaallatamaa',
     'home.viewAll': 'Muuxannoo hunda ilaali',
     'home.experiences': 'muuxannoowwan',
+    'home.empty': 'Amma muuxannoon hin jiru',
+    'home.emptyHint': 'Dhiyootti imala haaraaf deebi\'i ilaali.',
+    'home.browseAll': 'Hunda sakatta\'i',
 
-    'listing.about': 'Waa\'ee muuxannoo kanaa',
+    // Search
+    'search.title': 'Muuxannoo hunda',
+    'search.inCity': 'Waan hojjetamu',
+    'search.results': 'bu\'aawwan',
+    'search.showing': 'Agarsiisaa',
+    'search.of': 'keessaa',
+    'search.sortBy': 'Kanaan tartiibi',
+    'search.city': 'Magaalaa',
+    'search.category': 'Ramaddii',
+    'search.price': 'Gatii (ETB)',
+    'search.clearAll': 'Calaltuu hunda haqi',
+    'search.allCities': 'Magaalota hunda',
+    'search.allCategories': 'Ramaddiiwwan hunda',
+    'search.anyPrice': 'Gatii kamiyyuu',
+    'search.noResults': 'Muuxannoon hin argamne.',
+    'search.tryRemove': 'Calaltuu muraasa haquuf yaali.',
+
+    // Sort
+    'sort.popular': 'Jaallatamaa',
+    'sort.rating': 'Sadarkaa olaanaa',
+    'sort.priceAsc': 'Gatii: gadi irraa gara olii',
+    'sort.priceDesc': 'Gatii: olii irraa gara gadi',
+    'sort.newest': 'Haaraa',
+
+    // Listing
+    'listing.about': "Waa'ee muuxannoo kanaa",
     'listing.highlights': 'Qabiyyee ijoo',
     'listing.included': 'Kan dabalame',
     'listing.notIncluded': 'Kan hin dabalamne',
     'listing.meeting': 'Bakka walargii',
     'listing.cancellation': 'Imaammata haquu',
     'listing.reviews': 'Gamaaggamoota',
-    'listing.freeCancel24': 'Sa\'aatii 24 dura haquu bilisaa',
-    'listing.freeCancel48': 'Sa\'aatii 48 dura haquu bilisaa',
-    'listing.nonRefundable': 'Deebi\'uu kan hin dandeessisu',
+    'listing.freeCancel24': "Sa'aatii 24 dura haquu bilisaa",
+    'listing.freeCancel48': "Sa'aatii 48 dura haquu bilisaa",
+    'listing.nonRefundable': "Deebi'uu kan hin dandeessisu",
     'listing.bookNow': 'Argama mirkaneessi',
     'listing.from': 'Irraa',
     'listing.perPerson': 'nama tokkoof',
     'listing.duration': 'Yeroo',
-    'listing.groupSize': 'Baay\'ina garee',
+    'listing.groupSize': "Baay'ina garee",
     'listing.languages': 'Afaanota',
     'listing.category': 'Ramaddii',
     'listing.provider': 'Dhiyeessaa',
     'listing.reviewsCount': 'gamaaggamoota',
     'listing.writeReview': 'Gamaaggama barreessi',
-    'listing.beFirst': 'Gamaaggama jalqabaa ta\'i.',
+    'listing.beFirst': "Gamaaggama jalqabaa ta'i.",
     'listing.logInToReview': 'gamaaggama dhiisuuf.',
+    'listing.freeCancel': 'Haquu bilisaa',
+    'listing.freeCancelBody': "Sa'aatii 24 dura haquu, guutummaatti deebi'a",
+    'listing.payLater': "Amma qabadhu, booda kaffali",
+    'listing.payLaterBody': "Karoora imala kee mijataa godhi — har'a homaa hin kaffaline",
+    'listing.original': 'Kan Ethio Experiences',
+    'listing.addWishlist': "Gara tarree hawwii dabali",
+    'listing.share': 'Qoodi',
+    'listing.home': 'Mana',
+    'listing.explore': 'Sakatta\'i',
+    'listing.upTo': 'Hanga',
 
+    // Booking modal
     'booking.title': 'Muuxannoo kana qabadhu',
     'booking.date': 'Guyyaa',
     'booking.time': 'Yeroo',
-    'booking.adults': 'Ga\'eelota',
+    'booking.adults': "Ga'eelota",
     'booking.children': 'Ijoollee',
     'booking.name': 'Maqaa guutuu',
     'booking.email': 'Imeelii',
@@ -184,15 +427,67 @@ export const STRINGS: Record<Language, Record<string, string>> = {
     'booking.notes': 'Yaadannoo (filannoo)',
     'booking.total': 'Waliigala',
     'booking.confirm': 'Qabsiisa mirkaneessi',
+    'booking.confirmAndLogin': 'Seeniitii qabadhu',
     'booking.loginFirst': 'Mirkaneessuu dura seenuu ni gaafatama.',
+    'booking.booking': 'Qabsiisaa jira…',
+    'booking.confirmed': 'Qabsiisaan mirkanaa\'e!',
+
+    // Confirmation
+    'conf.title': 'Qabsiisaan mirkanaa\'e!',
+    'conf.sentTo': 'Imeelii mirkaneessaa ergameera gara',
+    'conf.reference': 'Wabii',
+    'conf.experience': 'Muuxannoo kee',
+    'conf.listingRemoved': 'Galmeen kun hin jiru.',
+    'conf.date': 'Guyyaa',
+    'conf.time': 'Yeroo',
+    'conf.participants': 'Hirmaattota',
+    'conf.status': 'Haala',
+    'conf.name': 'Maqaa',
+    'conf.email': 'Imeelii',
+    'conf.total': 'Waliigala',
+    'conf.viewBookings': 'Qabsiisawwan koo ilaali',
+    'conf.backHome': 'Gara manaatti deebi\'i',
+
+    // Bookings
+    'bookings.title': 'Qabsiisawwan koo',
+    'bookings.backAccount': 'Gara herregaatti deebi\'i',
+    'bookings.empty': 'Qabsiisaan hin jiru',
+    'bookings.emptyHint': 'Yeroo muuxannoo qabdu asitti mul\'ata.',
+    'bookings.browse': 'Muuxannoo sakatta\'i',
+    'bookings.viewVoucher': 'Vawchara ilaali',
+    'bookings.cancel': 'Haqi',
+    'bookings.confirmed': 'Mirkanaa\'e',
+    'bookings.cancelled': 'Haqame',
+    'bookings.listingRemoved': 'Galmeen haqame',
+
+    // Account
+    'account.title': 'Herrega koo',
+    'account.name': 'Maqaa',
+    'account.email': 'Imeelii',
+    'account.role': 'Gahee',
+    'account.language': 'Afaan',
+    'account.currency': 'Maallaqa',
+    'account.verified': 'Imeeliin mirkanaa\'e',
+    'account.yes': 'Eeyyee',
+    'account.no': 'Lakki',
+
+    // Common
+    'common.loading': 'Fe\'aa jira…',
+    'common.yes': 'Eeyyee',
+    'common.no': 'Lakki',
+    'common.save': 'Olkaa\'i',
+    'common.cancel': 'Haqi',
+    'common.delete': 'Balleessi',
+    'common.edit': 'Gulaali',
+    'common.close': 'Cufi',
   },
 };
 
 // Static exchange rates (update later with a live API)
 export const FX_RATES: Record<Currency, number> = {
   ETB: 1,
-  USD: 1 / 57,   // ~57 ETB per USD (approx)
-  EUR: 1 / 62,   // ~62 ETB per EUR (approx)
+  USD: 1 / 57,
+  EUR: 1 / 62,
 };
 
 export const CURRENCY_SYMBOL: Record<Currency, string> = {
@@ -204,7 +499,8 @@ export const CURRENCY_SYMBOL: Record<Currency, string> = {
 export function formatPrice(amountETB: number, currency: Currency) {
   const converted = amountETB * FX_RATES[currency];
   const symbol = CURRENCY_SYMBOL[currency];
-  const rounded = currency === 'ETB' ? Math.round(converted) : Math.round(converted * 100) / 100;
+  const rounded =
+    currency === 'ETB' ? Math.round(converted) : Math.round(converted * 100) / 100;
   return `${symbol} ${rounded.toLocaleString()}`;
 }
 

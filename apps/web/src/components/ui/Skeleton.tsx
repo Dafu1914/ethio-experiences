@@ -28,3 +28,23 @@ export function ListingGridSkeleton({ count = 6 }: { count?: number }) {
     </div>
   );
 }
+
+export function TableSkeleton({ rows = 5 }: { rows?: number }) {
+  return (
+    <div className="overflow-hidden rounded-card border border-line">
+      <div className="border-b border-line bg-surface px-4 py-3">
+        <Skeleton className="h-3 w-32" />
+      </div>
+      {Array.from({ length: rows }).map((_, i) => (
+        <div
+          key={i}
+          className="flex items-center gap-4 border-b border-line px-4 py-3 last:border-0"
+        >
+          <Skeleton className="h-10 w-14 shrink-0" />
+          <Skeleton className="h-4 flex-1" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+      ))}
+    </div>
+  );
+}

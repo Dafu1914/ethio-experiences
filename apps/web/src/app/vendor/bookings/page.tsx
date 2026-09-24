@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { TableSkeleton } from '@/components/ui/Skeleton';
 
 type Booking = {
   _id: string;
@@ -72,7 +73,12 @@ export default function VendorBookingsPage() {
   }, [bookings]);
 
   if (authLoading || loading) {
-    return <div className="p-20 text-center text-muted">Loading…</div>;
+    return (
+      <main className="mx-auto max-w-6xl px-6 py-10">
+        <div className="mb-8 h-8 w-48 animate-pulse rounded bg-surface" />
+        <TableSkeleton rows={6} />
+      </main>
+    );
   }
   if (!user) return null;
 
@@ -85,22 +91,17 @@ export default function VendorBookingsPage() {
             {bookings.length} total · {totals.count} confirmed
           </p>
         </div>
-        <Link
-          href="/vendor"
-          className="text-sm font-medium text-brand-blue hover:underline"
-        >
+        <Link href="/vendor" className="text-sm font-medium text-brand-blue hover:underline">
           ← Dashboard
         </Link>
       </div>
 
-      {/* Stats */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Stat label="Confirmed bookings" value={totals.count} />
         <Stat label="Travelers" value={totals.travellers} />
         <Stat label="Revenue (ETB)" value={totals.revenue.toLocaleString()} />
       </div>
 
-      {/* Filter pills */}
       <div className="mb-4 flex gap-2">
         {(['all', 'confirmed', 'cancelled'] as const).map((f) => (
           <button
@@ -121,7 +122,17 @@ export default function VendorBookingsPage() {
 
       {filtered.length === 0 ? (
         <div className="rounded-card border border-line bg-surface p-10 text-center">
-          <p className="text-muted">No bookings yet.</p>
+          <div className="mb-3 text-5xl">📭</div>
+          <p className="font-semibold text-ink">No bookings yet</p>
+          <p className="mt-1 text-sm text-muted">
+            When travelers book your experiences, they&apos;ll appear here.
+          </p>
+          <Link
+            href="/vendor/listings"
+            className="mt-5 inline-block rounded-pill bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-blueHover"
+          >
+            View my listings
+          </Link>
         </div>
       ) : (
         <div className="overflow-hidden rounded-card border border-line">
@@ -166,9 +177,7 @@ export default function VendorBookingsPage() {
                   </td>
                   <td className="px-4 py-3 text-muted">
                     {new Date(b.date).toLocaleDateString()}
-                    {b.timeSlot && (
-                      <span className="ml-1 text-xs">· {b.timeSlot}</span>
-                    )}
+                    {b.timeSlot && <span className="ml-1 text-xs">· {b.timeSlot}</span>}
                   </td>
                   <td className="px-4 py-3 text-muted">
                     {b.participants.adults}A

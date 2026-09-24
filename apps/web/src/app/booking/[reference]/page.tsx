@@ -58,7 +58,7 @@ export default async function BookingConfirmedPage({
           </p>
         </div>
 
-        {/* Listing — safe against deleted listings */}
+        {/* Listing */}
         <div className="mt-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             Your experience

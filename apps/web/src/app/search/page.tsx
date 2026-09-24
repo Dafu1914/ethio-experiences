@@ -1,8 +1,12 @@
+'use client';
+
+import { useEffect, useMemo, useState, Suspense } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { fetchListings } from '@/lib/server-api';
 import { ListingCard, ListingCardData } from '@/components/ui/ListingCard';
-
-export const dynamic = 'force-dynamic';
+import { ListingGridSkeleton } from '@/components/ui/Skeleton';
+import { useT } from '@/i18n/useT';
 
 const CITIES = [
   'Addis Ababa',
@@ -25,47 +29,47 @@ const CATEGORIES = [
   { val: 'transport', label: 'Transport' },
 ];
 
-const SORTS = [
-  { val: 'popular', label: 'Popular' },
-  { val: 'rating', label: 'Top rated' },
-  { val: 'priceAsc', label: 'Price: low to high' },
-  { val: 'priceDesc', label: 'Price: high to low' },
-  { val: 'newest', label: 'Newest' },
-];
+function SearchInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const t = useT();
 
-type SearchParams = {
-  city?: string;
-  category?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  q?: string;
-  sort?: string;
-};
+  const sp = useMemo(() => {
+    return {
+      city: searchParams.get('city') || '',
+      category: searchParams.get('category') || '',
+      minPrice: searchParams.get('minPrice') || '',
+      maxPrice: searchParams.get('maxPrice') || '',
+      q: searchParams.get('q') || '',
+      sort: searchParams.get('sort') || 'popular',
+    };
+  }, [searchParams]);
 
-export default async function SearchPage({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  const sp = await searchParams;
+  const [listings, setListings] = useState<ListingCardData[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const query: Record<string, string> = { limit: '50' };
-  if (sp.city) query.city = sp.city;
-  if (sp.category) query.category = sp.category;
-  if (sp.minPrice) query.minPrice = sp.minPrice;
-  if (sp.maxPrice) query.maxPrice = sp.maxPrice;
-  if (sp.q) query.q = sp.q;
-  if (sp.sort) query.sort = sp.sort;
+  useEffect(() => {
+    setLoading(true);
+    (async () => {
+      try {
+        const query: Record<string, string> = { limit: '50' };
+        if (sp.city) query.city = sp.city;
+        if (sp.category) query.category = sp.category;
+        if (sp.minPrice) query.minPrice = sp.minPrice;
+        if (sp.maxPrice) query.maxPrice = sp.maxPrice;
+        if (sp.q) query.q = sp.q;
+        if (sp.sort) query.sort = sp.sort;
 
-  let listings: ListingCardData[] = [];
-  let total = 0;
-  try {
-    const data = await fetchListings(query);
-    listings = data.items;
-    total = data.total;
-  } catch {}
+        const data = await fetchListings(query);
+        setListings(data.items);
+        setTotal(data.total);
+      } catch {}
+      setLoading(false);
+    })();
+  }, [sp]);
 
-  const buildQs = (overrides: Partial<SearchParams>) => {
+  const buildQs = (overrides: Record<string, string | undefined>) => {
     const merged: Record<string, string> = { ...sp, ...overrides } as any;
     const clean: Record<string, string> = {};
     Object.entries(merged).forEach(([k, v]) => {
@@ -74,75 +78,85 @@ export default async function SearchPage({
     return new URLSearchParams(clean).toString();
   };
 
+  const push = (overrides: Record<string, string | undefined>) => {
+    router.push(`/search?${buildQs(overrides)}`);
+  };
+
   const isAll = !sp.city && !sp.category && !sp.minPrice && !sp.maxPrice && !sp.q;
+
+  const sorts = [
+    { val: 'popular', label: t('sort.popular') },
+    { val: 'rating', label: t('sort.rating') },
+    { val: 'priceAsc', label: t('sort.priceAsc') },
+    { val: 'priceDesc', label: t('sort.priceDesc') },
+    { val: 'newest', label: t('sort.newest') },
+  ];
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-8">
-      {/* Header row */}
       <div className="mb-6">
         <h1 className="text-3xl font-extrabold text-ink">
-          {sp.city ? `Things to do in ${sp.city}` : 'All experiences'}
+          {sp.city ? `${t('search.inCity')} ${sp.city}` : t('search.title')}
         </h1>
-        <p className="mt-1 text-sm text-muted">{total} results</p>
+        <p className="mt-1 text-sm text-muted">
+          {total} {t('search.results')}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[260px_1fr]">
-        {/* Sidebar */}
         <aside className="md:sticky md:top-24 md:self-start">
           {!isAll && (
             <Link
               href="/search"
               className="mb-4 inline-block text-sm font-medium text-brand-blue hover:underline"
             >
-              ← Clear all filters
+              ← {t('search.clearAll')}
             </Link>
           )}
 
-          {/* City */}
-          <FilterGroup title="City">
+          <FilterGroup title={t('search.city')}>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href={`/search?${buildQs({ city: undefined })}`}
+                <button
+                  onClick={() => push({ city: undefined })}
                   className={`text-sm ${
                     !sp.city ? 'font-semibold text-ink' : 'text-muted hover:text-ink'
                   }`}
                 >
-                  All cities
-                </Link>
+                  {t('search.allCities')}
+                </button>
               </li>
               {CITIES.map((c) => (
                 <li key={c}>
-                  <Link
-                    href={`/search?${buildQs({ city: c })}`}
+                  <button
+                    onClick={() => push({ city: c })}
                     className={`text-sm ${
                       sp.city === c ? 'font-semibold text-brand-blue' : 'text-muted hover:text-ink'
                     }`}
                   >
                     {c}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
           </FilterGroup>
 
-          {/* Category */}
-          <FilterGroup title="Category">
+          <FilterGroup title={t('search.category')}>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href={`/search?${buildQs({ category: undefined })}`}
+                <button
+                  onClick={() => push({ category: undefined })}
                   className={`text-sm ${
                     !sp.category ? 'font-semibold text-ink' : 'text-muted hover:text-ink'
                   }`}
                 >
-                  All categories
-                </Link>
+                  {t('search.allCategories')}
+                </button>
               </li>
               {CATEGORIES.map((c) => (
                 <li key={c.val}>
-                  <Link
-                    href={`/search?${buildQs({ category: c.val })}`}
+                  <button
+                    onClick={() => push({ category: c.val })}
                     className={`text-sm ${
                       sp.category === c.val
                         ? 'font-semibold text-brand-blue'
@@ -150,17 +164,16 @@ export default async function SearchPage({
                     }`}
                   >
                     {c.label}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
           </FilterGroup>
 
-          {/* Price quick filters */}
-          <FilterGroup title="Price (ETB)">
+          <FilterGroup title={t('search.price')}>
             <ul className="space-y-2">
               {[
-                { label: 'Any price', min: undefined, max: undefined },
+                { label: t('search.anyPrice'), min: undefined, max: undefined },
                 { label: 'Under 2,000', min: undefined, max: '2000' },
                 { label: '2,000 – 5,000', min: '2000', max: '5000' },
                 { label: '5,000 – 15,000', min: '5000', max: '15000' },
@@ -171,17 +184,14 @@ export default async function SearchPage({
                   (sp.maxPrice || '') === (p.max || '');
                 return (
                   <li key={p.label}>
-                    <Link
-                      href={`/search?${buildQs({
-                        minPrice: p.min,
-                        maxPrice: p.max,
-                      })}`}
+                    <button
+                      onClick={() => push({ minPrice: p.min, maxPrice: p.max })}
                       className={`text-sm ${
                         active ? 'font-semibold text-brand-blue' : 'text-muted hover:text-ink'
                       }`}
                     >
                       {p.label}
-                    </Link>
+                    </button>
                   </li>
                 );
               })}
@@ -189,23 +199,22 @@ export default async function SearchPage({
           </FilterGroup>
         </aside>
 
-        {/* Results */}
         <section>
-          {/* Sort bar */}
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
             <span className="text-sm text-muted">
-              Showing <strong className="text-ink">{listings.length}</strong> of {total}
+              {t('search.showing')} <strong className="text-ink">{listings.length}</strong>{' '}
+              {t('search.of')} {total}
             </span>
 
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted">Sort by</span>
+              <span className="text-sm text-muted">{t('search.sortBy')}</span>
               <div className="flex flex-wrap gap-1">
-                {SORTS.map((s) => {
-                  const active = (sp.sort || 'popular') === s.val;
+                {sorts.map((s) => {
+                  const active = sp.sort === s.val;
                   return (
-                    <Link
+                    <button
                       key={s.val}
-                      href={`/search?${buildQs({ sort: s.val })}`}
+                      onClick={() => push({ sort: s.val })}
                       className={`rounded-pill px-3 py-1 text-xs font-medium ${
                         active
                           ? 'bg-brand-blue text-white'
@@ -213,16 +222,19 @@ export default async function SearchPage({
                       }`}
                     >
                       {s.label}
-                    </Link>
+                    </button>
                   );
                 })}
               </div>
             </div>
           </div>
 
-          {listings.length === 0 ? (
-            <div className="rounded-card border border-line bg-surface p-10 text-center text-muted">
-              No experiences found. Try removing some filters.
+          {loading ? (
+            <ListingGridSkeleton count={4} />
+          ) : listings.length === 0 ? (
+            <div className="rounded-card border border-line bg-surface p-10 text-center">
+              <p className="font-semibold text-ink">{t('search.noResults')}</p>
+              <p className="mt-1 text-sm text-muted">{t('search.tryRemove')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -237,13 +249,15 @@ export default async function SearchPage({
   );
 }
 
-function FilterGroup({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="p-20 text-center text-muted">Loading…</div>}>
+      <SearchInner />
+    </Suspense>
+  );
+}
+
+function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-6 border-b border-line pb-5">
       <p className="mb-3 text-sm font-bold text-ink">{title}</p>

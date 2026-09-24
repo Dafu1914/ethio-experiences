@@ -5,6 +5,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { Toaster } from "sonner";
 
 const inter = Inter({
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col antialiased">
         <LocaleProvider>
           <AuthProvider>
+            <ScrollToTop />
             <Header />
             <div className="flex-1">{children}</div>
             <Footer />

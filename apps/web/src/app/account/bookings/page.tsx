@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { api, imageUrl } from '@/lib/api';
+import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { useT } from '@/i18n/useT';
 
 type Booking = {
   _id: string;
@@ -26,6 +27,8 @@ type Booking = {
 export default function MyBookingsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const t = useT();
+
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -55,14 +58,14 @@ export default function MyBookingsPage() {
       setBookings((prev) =>
         prev.map((b) => (b.reference === ref ? { ...b, status: 'cancelled' } : b))
       );
-      toast.success('Booking cancelled');
+      toast.success(t('bookings.cancelled'));
     } catch (e: any) {
       toast.error(e.message || 'Failed to cancel');
     }
   };
 
   if (authLoading || loading) {
-    return <div className="p-20 text-center text-muted">Loading…</div>;
+    return <div className="p-20 text-center text-muted">{t('common.loading')}</div>;
   }
 
   if (!user) return null;
@@ -70,9 +73,12 @@ export default function MyBookingsPage() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-extrabold text-ink">My bookings</h1>
-        <Link href="/account" className="text-sm font-medium text-brand-blue hover:underline">
-          ← Back to account
+        <h1 className="text-3xl font-extrabold text-ink">{t('bookings.title')}</h1>
+        <Link
+          href="/account"
+          className="text-sm font-medium text-brand-blue hover:underline"
+        >
+          ← {t('bookings.backAccount')}
         </Link>
       </div>
 
@@ -81,15 +87,13 @@ export default function MyBookingsPage() {
       {bookings.length === 0 ? (
         <div className="rounded-card border border-line bg-surface p-10 text-center">
           <div className="mb-3 text-5xl">🎟️</div>
-          <p className="font-semibold text-ink">No bookings yet</p>
-          <p className="mt-1 text-sm text-muted">
-            When you book experiences, they&apos;ll appear here.
-          </p>
+          <p className="font-semibold text-ink">{t('bookings.empty')}</p>
+          <p className="mt-1 text-sm text-muted">{t('bookings.emptyHint')}</p>
           <Link
             href="/search"
             className="mt-5 inline-block rounded-pill bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-blueHover"
           >
-            Browse experiences
+            {t('bookings.browse')}
           </Link>
         </div>
       ) : (
@@ -107,7 +111,7 @@ export default function MyBookingsPage() {
                   {b.listingId.images?.[0]?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={imageUrl(b.listingId.images[0].url)}
+                      src={b.listingId.images[0].url}
                       alt={b.listingId.images[0].alt}
                       className="h-full w-full object-cover"
                     />
@@ -130,7 +134,7 @@ export default function MyBookingsPage() {
                         </Link>
                       ) : (
                         <span className="text-base font-bold italic text-muted">
-                          Listing removed
+                          {t('bookings.listingRemoved')}
                         </span>
                       )}
                       {b.listingId?.city && (
@@ -145,17 +149,19 @@ export default function MyBookingsPage() {
                           : 'bg-[#E7F6EE] text-[#12A150]'
                       }`}
                     >
-                      {b.status}
+                      {b.status === 'cancelled'
+                        ? t('bookings.cancelled')
+                        : t('bookings.confirmed')}
                     </span>
                   </div>
 
                   <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-[13px] text-muted sm:grid-cols-4">
                     <span>
-                      <strong className="font-semibold text-ink">Date:</strong>{' '}
+                      <strong className="font-semibold text-ink">{t('booking.date')}:</strong>{' '}
                       {new Date(b.date).toLocaleDateString()}
                     </span>
                     <span>
-                      <strong className="font-semibold text-ink">Time:</strong>{' '}
+                      <strong className="font-semibold text-ink">{t('booking.time')}:</strong>{' '}
                       {b.timeSlot || '—'}
                     </span>
                     <span>
@@ -163,7 +169,7 @@ export default function MyBookingsPage() {
                       <span className="font-mono">{b.reference}</span>
                     </span>
                     <span>
-                      <strong className="font-semibold text-ink">Total:</strong>{' '}
+                      <strong className="font-semibold text-ink">{t('booking.total')}:</strong>{' '}
                       {b.total.currency} {b.total.amount.toLocaleString()}
                     </span>
                   </div>
@@ -174,14 +180,14 @@ export default function MyBookingsPage() {
                     href={`/booking/${b.reference}`}
                     className="rounded-pill border border-line px-4 py-1.5 text-xs font-semibold text-ink hover:bg-surface"
                   >
-                    View voucher
+                    {t('bookings.viewVoucher')}
                   </Link>
                   {b.status !== 'cancelled' && (
                     <button
                       onClick={() => cancelBooking(b.reference)}
                       className="rounded-pill border border-line px-4 py-1.5 text-xs font-semibold text-danger hover:bg-surface"
                     >
-                      Cancel
+                      {t('bookings.cancel')}
                     </button>
                   )}
                 </div>
