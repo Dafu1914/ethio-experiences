@@ -2,6 +2,7 @@ import { fetchListings } from '@/lib/server-api';
 import { ListingCardData } from '@/components/ui/ListingCard';
 import { Hero } from '@/components/home/Hero';
 import { HomeListings } from '@/components/home/HomeListings';
+import { HomeJsonLd } from '@/components/home/HomeJsonLd';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,7 @@ export default async function Home() {
 
   return (
     <main>
+      <HomeJsonLd />
       <Hero />
       <HomeListings listings={listings} total={total} />
     </main>

@@ -1,7 +1,9 @@
 // Dev workaround for Windows schannel cert revocation issues
 // (Kaspersky / Windows firewall blocking CRL lookups)
 // Remove this in production — Linux servers don't have this problem.
-if (process.env.NODE_ENV !== 'production') {
+import { env as _env } from '../config/env';
+
+if (_env.NODE_ENV !== 'production') {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
 
