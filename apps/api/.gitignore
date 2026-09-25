@@ -5,3 +5,4 @@ dist
 *.log
 test-*.json
 cookies.txt
+uploads
