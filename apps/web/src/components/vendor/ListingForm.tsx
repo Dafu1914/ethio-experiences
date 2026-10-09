@@ -15,6 +15,7 @@ const CITIES = [
   'Bahir Dar',
   'Mekelle',
   'Jinka',
+  'Hawzien',
   'Other',
 ];
 
@@ -28,14 +29,26 @@ const CATEGORIES = [
   { val: 'transport', label: 'Transport' },
 ];
 
+const PROPERTY_TYPES = [
+  { val: 'hotel', label: 'Hotel' },
+  { val: 'lodge', label: 'Lodge' },
+  { val: 'guesthouse', label: 'Guesthouse' },
+  { val: 'homestay', label: 'Homestay' },
+  { val: 'camp', label: 'Camp' },
+];
+
 const API_BASE =
-  (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').replace(/\/api\/?$/, '');
+  (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').replace(
+    /\/api\/?$/,
+    ''
+  );
 
 const toAbsolute = (url: string) =>
   url.startsWith('/uploads/') ? `${API_BASE}${url}` : url;
 
 export type ListingFormValues = {
   _id?: string;
+  type?: 'tour' | 'stay';
   title?: string;
   shortDescription?: string;
   description?: string;
@@ -46,12 +59,23 @@ export type ListingFormValues = {
   groupSize?: number;
   languages?: string[];
   priceFrom?: { amount: number; currency: 'ETB' | 'USD' | 'EUR' };
+  priceUnit?: 'person' | 'night' | 'day' | 'trip';
   highlights?: string[];
   included?: string[];
   notIncluded?: string[];
   meetingPoint?: { name?: string; address?: string };
   cancellationPolicy?: '24h-free' | '48h-free' | 'non-refundable';
   images?: { url: string; alt: string }[];
+  stay?: {
+    propertyType?: 'hotel' | 'lodge' | 'guesthouse' | 'homestay' | 'camp';
+    roomTypes?: { name: string; pricePerNight: number; capacity: number }[];
+    amenities?: string[];
+    checkInTime?: string;
+    checkOutTime?: string;
+    maxGuests?: number;
+    bedrooms?: number;
+    bathrooms?: number;
+  };
 };
 
 export function ListingForm({
@@ -63,28 +87,75 @@ export function ListingForm({
 }) {
   const router = useRouter();
 
+  // ── Base fields
+  const [type, setType] = useState<'tour' | 'stay'>(initial?.type || 'tour');
   const [title, setTitle] = useState(initial?.title || '');
-  const [shortDescription, setShortDescription] = useState(initial?.shortDescription || '');
+  const [shortDescription, setShortDescription] = useState(
+    initial?.shortDescription || ''
+  );
   const [description, setDescription] = useState(initial?.description || '');
-  const [category, setCategory] = useState(initial?.category || 'tour');
+  const [category, setCategory] = useState(
+    initial?.category || (initial?.type === 'stay' ? 'stay' : 'tour')
+  );
   const [city, setCity] = useState(initial?.city || 'Addis Ababa');
   const [region, setRegion] = useState(initial?.region || '');
-  const [durationMinutes, setDurationMinutes] = useState(initial?.durationMinutes ?? 240);
-  const [groupSize, setGroupSize] = useState(initial?.groupSize ?? 12);
-  const [languages, setLanguages] = useState((initial?.languages || ['en']).join(', '));
-  const [priceAmount, setPriceAmount] = useState(initial?.priceFrom?.amount ?? 2000);
+  const [languages, setLanguages] = useState(
+    (initial?.languages || ['en']).join(', ')
+  );
+  const [priceAmount, setPriceAmount] = useState(
+    initial?.priceFrom?.amount ?? 2000
+  );
   const [currency, setCurrency] = useState<'ETB' | 'USD' | 'EUR'>(
     initial?.priceFrom?.currency || 'ETB'
   );
-  const [highlights, setHighlights] = useState((initial?.highlights || []).join('\n'));
+  const [highlights, setHighlights] = useState(
+    (initial?.highlights || []).join('\n')
+  );
   const [included, setIncluded] = useState((initial?.included || []).join('\n'));
-  const [notIncluded, setNotIncluded] = useState((initial?.notIncluded || []).join('\n'));
-  const [meetingName, setMeetingName] = useState(initial?.meetingPoint?.name || '');
-  const [meetingAddress, setMeetingAddress] = useState(initial?.meetingPoint?.address || '');
+  const [notIncluded, setNotIncluded] = useState(
+    (initial?.notIncluded || []).join('\n')
+  );
   const [cancellationPolicy, setCancellationPolicy] = useState<
     '24h-free' | '48h-free' | 'non-refundable'
   >(initial?.cancellationPolicy || '24h-free');
 
+  // ── Tour-only fields
+  const [durationMinutes, setDurationMinutes] = useState(
+    initial?.durationMinutes ?? 240
+  );
+  const [groupSize, setGroupSize] = useState(initial?.groupSize ?? 12);
+  const [meetingName, setMeetingName] = useState(
+    initial?.meetingPoint?.name || ''
+  );
+  const [meetingAddress, setMeetingAddress] = useState(
+    initial?.meetingPoint?.address || ''
+  );
+
+  // ── Stay-only fields
+  const [propertyType, setPropertyType] = useState<
+    'hotel' | 'lodge' | 'guesthouse' | 'homestay' | 'camp'
+  >(initial?.stay?.propertyType || 'lodge');
+  const [amenities, setAmenities] = useState(
+    (initial?.stay?.amenities || []).join(', ')
+  );
+  const [checkInTime, setCheckInTime] = useState(
+    initial?.stay?.checkInTime || '14:00'
+  );
+  const [checkOutTime, setCheckOutTime] = useState(
+    initial?.stay?.checkOutTime || '11:00'
+  );
+  const [maxGuests, setMaxGuests] = useState(initial?.stay?.maxGuests ?? 2);
+  const [bedrooms, setBedrooms] = useState(initial?.stay?.bedrooms ?? 1);
+  const [bathrooms, setBathrooms] = useState(initial?.stay?.bathrooms ?? 1);
+  const [roomTypes, setRoomTypes] = useState<
+    { name: string; pricePerNight: number; capacity: number }[]
+  >(
+    initial?.stay?.roomTypes || [
+      { name: 'Standard Room', pricePerNight: 3000, capacity: 2 },
+    ]
+  );
+
+  // ── Shared
   const [images, setImages] = useState<string[]>(
     (initial?.images || []).map((i) => toAbsolute(i.url))
   );
@@ -114,6 +185,32 @@ export function ListingForm({
     setImages((prev) => prev.filter((u) => u !== url));
   };
 
+  // ── Room type helpers
+  const addRoomType = () => {
+    setRoomTypes((prev) => [
+      ...prev,
+      { name: '', pricePerNight: 3000, capacity: 2 },
+    ]);
+  };
+
+  const updateRoomType = (
+    i: number,
+    field: 'name' | 'pricePerNight' | 'capacity',
+    value: any
+  ) => {
+    setRoomTypes((prev) =>
+      prev.map((r, idx) =>
+        idx === i
+          ? { ...r, [field]: field === 'name' ? value : Number(value) }
+          : r
+      )
+    );
+  };
+
+  const removeRoomType = (i: number) => {
+    setRoomTypes((prev) => prev.filter((_, idx) => idx !== i));
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr('');
@@ -126,7 +223,8 @@ export function ListingForm({
     }
 
     try {
-      const payload = {
+      const payload: any = {
+        type,
         title,
         shortDescription,
         description,
@@ -134,13 +232,12 @@ export function ListingForm({
         city,
         region: region || city,
         images: images.map((url, i) => ({ url, alt: `${title} — photo ${i + 1}` })),
-        durationMinutes: Number(durationMinutes),
-        groupSize: Number(groupSize),
         languages: languages
           .split(',')
           .map((s) => s.trim())
           .filter(Boolean),
         priceFrom: { amount: Number(priceAmount), currency },
+        priceUnit: type === 'stay' ? 'night' : 'person',
         highlights: highlights
           .split('\n')
           .map((s) => s.trim())
@@ -153,12 +250,39 @@ export function ListingForm({
           .split('\n')
           .map((s) => s.trim())
           .filter(Boolean),
-        meetingPoint:
-          meetingName && meetingAddress
-            ? { name: meetingName, address: meetingAddress }
-            : undefined,
         cancellationPolicy,
       };
+
+      if (type === 'tour') {
+        payload.durationMinutes = Number(durationMinutes);
+        payload.groupSize = Number(groupSize);
+        payload.meetingPoint =
+          meetingName && meetingAddress
+            ? { name: meetingName, address: meetingAddress }
+            : undefined;
+      } else {
+        payload.durationMinutes = 1440;
+        payload.groupSize = Number(maxGuests);
+        payload.stay = {
+          propertyType,
+          roomTypes: roomTypes
+            .filter((r) => r.name.trim())
+            .map((r) => ({
+              name: r.name.trim(),
+              pricePerNight: Number(r.pricePerNight),
+              capacity: Number(r.capacity),
+            })),
+          amenities: amenities
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean),
+          checkInTime,
+          checkOutTime,
+          maxGuests: Number(maxGuests),
+          bedrooms: Number(bedrooms),
+          bathrooms: Number(bathrooms),
+        };
+      }
 
       if (mode === 'create') {
         await api.post('/listings', payload);
@@ -185,6 +309,51 @@ export function ListingForm({
         </div>
       )}
 
+      {/* TYPE SELECTOR */}
+      <div className="rounded-card border border-line bg-white p-5">
+        <h2 className="mb-4 text-lg font-extrabold text-ink">What are you listing?</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              setType('tour');
+              if (category !== 'tour') setCategory('tour');
+            }}
+            className={`rounded-card border-2 p-4 text-left transition ${
+              type === 'tour'
+                ? 'border-brand-blue bg-brand-blue/5'
+                : 'border-line hover:border-muted'
+            }`}
+          >
+            <div className="text-2xl">🏛️</div>
+            <p className="mt-2 font-bold text-ink">Tour / Experience</p>
+            <p className="text-xs text-muted">
+              Guided activities with a fixed duration
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setType('stay');
+              if (category !== 'stay') setCategory('stay');
+            }}
+            className={`rounded-card border-2 p-4 text-left transition ${
+              type === 'stay'
+                ? 'border-brand-blue bg-brand-blue/5'
+                : 'border-line hover:border-muted'
+            }`}
+          >
+            <div className="text-2xl">🏨</div>
+            <p className="mt-2 font-bold text-ink">Stay</p>
+            <p className="text-xs text-muted">
+              Hotel, lodge, guesthouse, or homestay
+            </p>
+          </button>
+        </div>
+      </div>
+
+      {/* BASICS */}
       <Section title="Basic information">
         <Field label="Title">
           <input
@@ -192,7 +361,11 @@ export function ListingForm({
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Lalibela: Rock-Hewn Churches Full-Day Tour"
+            placeholder={
+              type === 'stay'
+                ? 'e.g. Simien Lodge — Highest Lodge in Africa'
+                : 'e.g. Lalibela: Rock-Hewn Churches Full-Day Tour'
+            }
             className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
           />
         </Field>
@@ -260,40 +433,187 @@ export function ListingForm({
         </Field>
       </Section>
 
-      <Section title="Logistics & pricing">
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Duration (minutes)">
+      {/* TYPE-SPECIFIC */}
+      {type === 'tour' ? (
+        <Section title="Tour logistics">
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Duration (minutes)">
+              <input
+                type="number"
+                min={30}
+                value={durationMinutes}
+                onChange={(e) => setDurationMinutes(Number(e.target.value))}
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+            <Field label="Group size">
+              <input
+                type="number"
+                min={1}
+                value={groupSize}
+                onChange={(e) => setGroupSize(Number(e.target.value))}
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Meeting point name">
+              <input
+                type="text"
+                value={meetingName}
+                onChange={(e) => setMeetingName(e.target.value)}
+                placeholder="e.g. Lalibela Main Gate"
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+            <Field label="Meeting point address">
+              <input
+                type="text"
+                value={meetingAddress}
+                onChange={(e) => setMeetingAddress(e.target.value)}
+                placeholder="e.g. Lalibela, Amhara"
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+          </div>
+        </Section>
+      ) : (
+        <Section title="Stay details">
+          <Field label="Property type">
+            <select
+              value={propertyType}
+              onChange={(e) => setPropertyType(e.target.value as any)}
+              className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+            >
+              {PROPERTY_TYPES.map((p) => (
+                <option key={p.val} value={p.val}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <div className="grid grid-cols-3 gap-3">
+            <Field label="Max guests">
+              <input
+                type="number"
+                min={1}
+                value={maxGuests}
+                onChange={(e) => setMaxGuests(Number(e.target.value))}
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+            <Field label="Bedrooms">
+              <input
+                type="number"
+                min={0}
+                value={bedrooms}
+                onChange={(e) => setBedrooms(Number(e.target.value))}
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+            <Field label="Bathrooms">
+              <input
+                type="number"
+                min={0}
+                value={bathrooms}
+                onChange={(e) => setBathrooms(Number(e.target.value))}
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Check-in time">
+              <input
+                type="time"
+                value={checkInTime}
+                onChange={(e) => setCheckInTime(e.target.value)}
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+            <Field label="Check-out time">
+              <input
+                type="time"
+                value={checkOutTime}
+                onChange={(e) => setCheckOutTime(e.target.value)}
+                className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
+              />
+            </Field>
+          </div>
+
+          <Field label="Amenities (comma-separated, e.g. WiFi, Restaurant, Parking)">
             <input
-              type="number"
-              min={30}
-              value={durationMinutes}
-              onChange={(e) => setDurationMinutes(Number(e.target.value))}
+              type="text"
+              value={amenities}
+              onChange={(e) => setAmenities(e.target.value)}
+              placeholder="WiFi, Restaurant, Pool, Parking"
               className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
             />
           </Field>
+        </Section>
+      )}
 
-          <Field label="Group size">
-            <input
-              type="number"
-              min={1}
-              value={groupSize}
-              onChange={(e) => setGroupSize(Number(e.target.value))}
-              className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
-            />
-          </Field>
-        </div>
+      {/* ROOM TYPES (only for stays) */}
+      {type === 'stay' && (
+        <Section title="Room types">
+          <div className="space-y-3">
+            {roomTypes.map((room, i) => (
+              <div
+                key={i}
+                className="grid grid-cols-1 gap-2 rounded-tile border border-line bg-surface p-3 sm:grid-cols-[1fr_140px_100px_40px]"
+              >
+                <input
+                  type="text"
+                  placeholder="Room name"
+                  value={room.name}
+                  onChange={(e) => updateRoomType(i, 'name', e.target.value)}
+                  className="rounded-tile border border-line bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
+                />
+                <input
+                  type="number"
+                  placeholder="Price/night"
+                  min={0}
+                  value={room.pricePerNight}
+                  onChange={(e) =>
+                    updateRoomType(i, 'pricePerNight', e.target.value)
+                  }
+                  className="rounded-tile border border-line bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
+                />
+                <input
+                  type="number"
+                  placeholder="Sleeps"
+                  min={1}
+                  value={room.capacity}
+                  onChange={(e) => updateRoomType(i, 'capacity', e.target.value)}
+                  className="rounded-tile border border-line bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeRoomType(i)}
+                  disabled={roomTypes.length === 1}
+                  className="rounded-tile border border-line text-danger hover:bg-danger/10 disabled:opacity-30"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={addRoomType}
+            className="mt-2 rounded-pill border border-line px-4 py-1.5 text-xs font-semibold text-ink hover:bg-surface"
+          >
+            + Add room type
+          </button>
+        </Section>
+      )}
 
-        <Field label="Languages (comma-separated, e.g. en, am, fr)">
-          <input
-            type="text"
-            value={languages}
-            onChange={(e) => setLanguages(e.target.value)}
-            className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
-          />
-        </Field>
-
+      {/* PRICING */}
+      <Section title="Pricing">
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Price per person">
+          <Field label={type === 'stay' ? 'Base price per night' : 'Price per person'}>
             <input
               type="number"
               min={0}
@@ -302,7 +622,6 @@ export function ListingForm({
               className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
             />
           </Field>
-
           <Field label="Currency">
             <select
               value={currency}
@@ -329,13 +648,18 @@ export function ListingForm({
         </Field>
       </Section>
 
+      {/* HIGHLIGHTS & INCLUDES */}
       <Section title="What travelers can expect">
         <Field label="Highlights (one per line)">
           <textarea
             rows={3}
             value={highlights}
             onChange={(e) => setHighlights(e.target.value)}
-            placeholder={'Visit all 11 churches\nCertified local guide'}
+            placeholder={
+              type === 'stay'
+                ? 'Highest lodge in Africa\nPanoramic mountain views'
+                : 'Visit all 11 churches\nCertified local guide'
+            }
             className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
           />
         </Field>
@@ -345,7 +669,11 @@ export function ListingForm({
             rows={3}
             value={included}
             onChange={(e) => setIncluded(e.target.value)}
-            placeholder={'Guide\nEntrance fees\nBottled water'}
+            placeholder={
+              type === 'stay'
+                ? 'Breakfast\nWiFi\nMountain views'
+                : 'Guide\nEntrance fees\nBottled water'
+            }
             className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
           />
         </Field>
@@ -359,30 +687,9 @@ export function ListingForm({
             className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
           />
         </Field>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Meeting point name">
-            <input
-              type="text"
-              value={meetingName}
-              onChange={(e) => setMeetingName(e.target.value)}
-              placeholder="e.g. Lalibela Main Gate"
-              className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
-            />
-          </Field>
-
-          <Field label="Meeting point address">
-            <input
-              type="text"
-              value={meetingAddress}
-              onChange={(e) => setMeetingAddress(e.target.value)}
-              placeholder="e.g. Lalibela, Amhara"
-              className="w-full rounded-tile border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-blue"
-            />
-          </Field>
-        </div>
       </Section>
 
+      {/* IMAGES */}
       <Section title="Images">
         <Field label="Upload at least 1 image (JPG, PNG, WEBP — max 8MB each)">
           <input
@@ -419,6 +726,7 @@ export function ListingForm({
         )}
       </Section>
 
+      {/* SUBMIT */}
       <div className="flex flex-wrap gap-3">
         <button
           type="submit"

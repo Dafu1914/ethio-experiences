@@ -1,5 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
+export type ListingType = 'tour' | 'stay' | 'driver' | 'guide';
+
 export type ListingCategory =
   | 'tour'
   | 'trek'
@@ -9,7 +11,19 @@ export type ListingCategory =
   | 'stay'
   | 'transport';
 
+export interface IStayData {
+  propertyType?: 'hotel' | 'lodge' | 'guesthouse' | 'homestay' | 'camp';
+  roomTypes?: { name: string; pricePerNight: number; capacity: number }[];
+  amenities?: string[];
+  checkInTime?: string;   // "14:00"
+  checkOutTime?: string;  // "11:00"
+  maxGuests?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+}
+
 export interface IListing extends Document {
+  type: ListingType;      // NEW — tour | stay | driver | guide
   slug: string;
   title: string;
   description: string;
@@ -18,10 +32,11 @@ export interface IListing extends Document {
   city: string;
   region: string;
   images: { url: string; alt: string }[];
-  durationMinutes: number;
-  groupSize: number;
+  durationMinutes?: number;   // optional for stays
+  groupSize?: number;
   languages: string[];
   priceFrom: { amount: number; currency: 'ETB' | 'USD' | 'EUR' };
+  priceUnit?: 'person' | 'night' | 'day' | 'trip';   // NEW
   rating: { avg: number; count: number };
   highlights: string[];
   included: string[];
@@ -34,6 +49,7 @@ export interface IListing extends Document {
   cancellationPolicy: '24h-free' | '48h-free' | 'non-refundable';
   urgencyBadge?: string;
   isOriginal: boolean;
+  stay?: IStayData;      // NEW — only for type: 'stay'
   vendorId: mongoose.Types.ObjectId;
   status: 'draft' | 'pending' | 'published' | 'archived';
   createdAt: Date;
@@ -42,6 +58,13 @@ export interface IListing extends Document {
 
 const ListingSchema = new Schema<IListing>(
   {
+    type: {
+      type: String,
+      enum: ['tour', 'stay', 'driver', 'guide'],
+      default: 'tour',
+      required: true,
+      index: true,
+    },
     slug: { type: String, required: true, unique: true, index: true },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
@@ -60,12 +83,17 @@ const ListingSchema = new Schema<IListing>(
         alt: { type: String, default: '' },
       },
     ],
-    durationMinutes: { type: Number, required: true, min: 1 },
+    durationMinutes: { type: Number, min: 1 },
     groupSize: { type: Number, default: 12, min: 1 },
     languages: { type: [String], default: ['en'] },
     priceFrom: {
       amount: { type: Number, required: true, min: 0 },
       currency: { type: String, enum: ['ETB', 'USD', 'EUR'], default: 'ETB' },
+    },
+    priceUnit: {
+      type: String,
+      enum: ['person', 'night', 'day', 'trip'],
+      default: 'person',
     },
     rating: {
       avg: { type: Number, default: 0, min: 0, max: 5 },
@@ -89,6 +117,25 @@ const ListingSchema = new Schema<IListing>(
     },
     urgencyBadge: String,
     isOriginal: { type: Boolean, default: false },
+    stay: {
+      propertyType: {
+        type: String,
+        enum: ['hotel', 'lodge', 'guesthouse', 'homestay', 'camp'],
+      },
+      roomTypes: [
+        {
+          name: { type: String, required: true },
+          pricePerNight: { type: Number, required: true, min: 0 },
+          capacity: { type: Number, default: 2, min: 1 },
+        },
+      ],
+      amenities: { type: [String], default: [] },
+      checkInTime: String,
+      checkOutTime: String,
+      maxGuests: Number,
+      bedrooms: Number,
+      bathrooms: Number,
+    },
     vendorId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     status: {
       type: String,

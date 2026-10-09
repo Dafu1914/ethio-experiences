@@ -11,9 +11,14 @@ export default async function Home() {
   let total = 0;
 
   try {
-    const data = await fetchListings({ limit: '12', sort: 'popular' });
-    listings = data.items;
-    total = data.total;
+    // Fetch 12 of each type, then merge
+    const [toursRes, staysRes] = await Promise.all([
+      fetchListings({ limit: '8', sort: 'popular', type: 'tour' }),
+      fetchListings({ limit: '8', sort: 'popular', type: 'stay' }),
+    ]);
+
+    listings = [...(toursRes.items || []), ...(staysRes.items || [])];
+    total = (toursRes.total || 0) + (staysRes.total || 0);
   } catch {}
 
   return (

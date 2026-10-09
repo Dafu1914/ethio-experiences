@@ -49,7 +49,7 @@ function listingJsonLd(listing: any, siteUrl: string) {
   };
 }
 
-export function ListingDetail({ listing }: { listing: any }) {
+export function TourDetail({ listing }: { listing: any }) {
   const t = useT();
   const [copied, setCopied] = useState(false);
 
@@ -67,7 +67,6 @@ export function ListingDetail({ listing }: { listing: any }) {
   };
 
   const onMobileBook = () => {
-    // Click the sticky BookingCard's "Check availability" button
     const aside = document.querySelector('aside');
     const btn = aside?.querySelector('button');
     if (btn) (btn as HTMLButtonElement).click();
@@ -268,7 +267,7 @@ export function ListingDetail({ listing }: { listing: any }) {
         />
       </main>
 
-      {/* Mobile sticky booking bar */}
+      {/* Mobile sticky bar */}
       <div className="fixed bottom-14 left-0 right-0 z-30 border-t border-line bg-white p-3 shadow-[0_-4px_16px_rgba(10,26,47,0.08)] md:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <div>

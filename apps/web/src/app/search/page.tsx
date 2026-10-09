@@ -29,6 +29,14 @@ const CATEGORIES = [
   { val: 'transport', label: 'Transport' },
 ];
 
+const TYPES = [
+  { val: '', label: 'All' },
+  { val: 'tour', label: 'Tours' },
+  { val: 'stay', label: 'Stays' },
+  { val: 'driver', label: 'Drivers' },
+  { val: 'guide', label: 'Guides' },
+];
+
 function SearchInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -38,6 +46,7 @@ function SearchInner() {
     return {
       city: searchParams.get('city') || '',
       category: searchParams.get('category') || '',
+      type: searchParams.get('type') || '',
       minPrice: searchParams.get('minPrice') || '',
       maxPrice: searchParams.get('maxPrice') || '',
       q: searchParams.get('q') || '',
@@ -56,6 +65,7 @@ function SearchInner() {
         const query: Record<string, string> = { limit: '50' };
         if (sp.city) query.city = sp.city;
         if (sp.category) query.category = sp.category;
+        if (sp.type) query.type = sp.type;
         if (sp.minPrice) query.minPrice = sp.minPrice;
         if (sp.maxPrice) query.maxPrice = sp.maxPrice;
         if (sp.q) query.q = sp.q;
@@ -82,7 +92,8 @@ function SearchInner() {
     router.push(`/search?${buildQs(overrides)}`);
   };
 
-  const isAll = !sp.city && !sp.category && !sp.minPrice && !sp.maxPrice && !sp.q;
+  const isAll =
+    !sp.city && !sp.category && !sp.type && !sp.minPrice && !sp.maxPrice && !sp.q;
 
   const sorts = [
     { val: 'popular', label: t('sort.popular') },
@@ -101,6 +112,26 @@ function SearchInner() {
         <p className="mt-1 text-sm text-muted">
           {total} {t('search.results')}
         </p>
+
+        {/* Type filter pills */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {TYPES.map((tp) => {
+            const active = (sp.type || '') === tp.val;
+            return (
+              <button
+                key={tp.val}
+                onClick={() => push({ type: tp.val || undefined })}
+                className={`rounded-pill px-4 py-1.5 text-sm font-semibold ${
+                  active
+                    ? 'bg-brand-blue text-white'
+                    : 'border border-line text-ink hover:bg-surface'
+                }`}
+              >
+                {tp.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[260px_1fr]">
@@ -131,7 +162,9 @@ function SearchInner() {
                   <button
                     onClick={() => push({ city: c })}
                     className={`text-sm ${
-                      sp.city === c ? 'font-semibold text-brand-blue' : 'text-muted hover:text-ink'
+                      sp.city === c
+                        ? 'font-semibold text-brand-blue'
+                        : 'text-muted hover:text-ink'
                     }`}
                   >
                     {c}
@@ -251,7 +284,9 @@ function SearchInner() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="p-20 text-center text-muted">Loading…</div>}>
+    <Suspense
+      fallback={<div className="p-20 text-center text-muted">Loading…</div>}
+    >
       <SearchInner />
     </Suspense>
   );

@@ -7,9 +7,10 @@ const slugify = (s: string) =>
 // GET /api/listings
 // Query: ?city=&category=&minPrice=&maxPrice=&sort=&q=&page=&limit=
 export const listListings = async (req: Request, res: Response) => {
-  const {
+   const {
     city,
     category,
+    type,
     minPrice,
     maxPrice,
     q,
@@ -21,6 +22,7 @@ export const listListings = async (req: Request, res: Response) => {
   const filter: any = { status: 'published' };
   if (city) filter.city = new RegExp(`^${city}$`, 'i');
   if (category) filter.category = category;
+  if (type) filter.type = type;
   if (minPrice || maxPrice) {
     filter['priceFrom.amount'] = {};
     if (minPrice) filter['priceFrom.amount'].$gte = Number(minPrice);

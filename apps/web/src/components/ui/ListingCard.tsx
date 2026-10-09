@@ -11,8 +11,10 @@ export type ListingCardData = {
   slug: string;
   title: string;
   city: string;
-  durationMinutes: number;
+  type?: 'tour' | 'stay' | 'driver' | 'guide';
+  durationMinutes?: number;
   priceFrom: { amount: number; currency: string };
+  priceUnit?: 'person' | 'night' | 'day' | 'trip';
   rating: { avg: number; count: number };
   images: { url: string; alt: string }[];
   urgencyBadge?: string;
@@ -31,10 +33,26 @@ function formatDuration(mins: number) {
   return m ? `${h}h ${m}m` : `${h}h`;
 }
 
+const TYPE_BADGE: Record<string, string> = {
+  tour: 'Tour',
+  stay: 'Stay',
+  driver: 'Driver',
+  guide: 'Guide',
+};
+
+const UNIT_LABEL: Record<string, string> = {
+  person: 'per person',
+  night: 'per night',
+  day: 'per day',
+  trip: 'per trip',
+};
+
 export function ListingCard({ listing }: { listing: ListingCardData }) {
   const { currency } = useLocale();
   const [saved, setSaved] = useState(false);
   const img = listing.images?.[0]?.url || '';
+  const type = listing.type || 'tour';
+  const unit = listing.priceUnit || (type === 'stay' ? 'night' : 'person');
 
   const toggleSave = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -67,11 +85,16 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           </div>
         )}
 
-        {listing.isOriginal && (
+        {/* Left badge: Original OR type badge for non-tours */}
+        {listing.isOriginal ? (
           <span className="absolute left-3 top-3 rounded-full bg-brand-orange px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow">
             Original
           </span>
-        )}
+        ) : type !== 'tour' ? (
+          <span className="absolute left-3 top-3 rounded-full bg-ink px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow">
+            {TYPE_BADGE[type] || type}
+          </span>
+        ) : null}
 
         <button
           type="button"
@@ -102,7 +125,11 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           {listing.title}
         </h3>
 
-        <p className="text-[13px] text-muted">{formatDuration(listing.durationMinutes)}</p>
+        {listing.durationMinutes ? (
+          <p className="text-[13px] text-muted">{formatDuration(listing.durationMinutes)}</p>
+        ) : type === 'stay' ? (
+          <p className="text-[13px] text-muted">Overnight stay</p>
+        ) : null}
 
         <div className="flex items-end justify-between pt-1">
           <span className="flex items-center gap-1 text-[13px] text-ink">
@@ -110,11 +137,13 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
             <span className="font-semibold">{listing.rating.avg.toFixed(1)}</span>
             <span className="text-muted">({listing.rating.count})</span>
           </span>
-          <span className="text-[13px] text-muted">
+          <span className="text-right text-[13px] text-muted">
             From{' '}
             <span className="text-[15px] font-bold text-ink">
               {formatPrice(listing.priceFrom.amount, currency)}
             </span>
+            <br />
+            <span className="text-[10px] uppercase tracking-wide">{UNIT_LABEL[unit]}</span>
           </span>
         </div>
       </div>
