@@ -34,6 +34,16 @@ export interface IDriverData {
   perDayIncluded?: string[];
 }
 
+export interface IGuideData {
+  specialties?: string[];
+  yearsExperience?: number;
+  regions?: string[];
+  certifications?: string[];
+  dayRate?: number;
+  maxGroupSize?: number;
+  mode?: 'half-day' | 'full-day' | 'multi-day';
+}
+
 export interface IListing extends Document {
   type: ListingType;
   slug: string;
@@ -63,6 +73,7 @@ export interface IListing extends Document {
   isOriginal: boolean;
   stay?: IStayData;
   driver?: IDriverData;
+  guide?: IGuideData;
   vendorId: mongoose.Types.ObjectId;
   status: 'draft' | 'pending' | 'published' | 'archived';
   createdAt: Date;
@@ -161,6 +172,19 @@ const ListingSchema = new Schema<IListing>(
       speaksEnglish: { type: Boolean, default: true },
       dailyRate: Number,
       perDayIncluded: { type: [String], default: [] },
+    },
+
+    guide: {
+      specialties: { type: [String], default: [] },
+      yearsExperience: Number,
+      regions: { type: [String], default: [] },
+      certifications: { type: [String], default: [] },
+      dayRate: Number,
+      maxGroupSize: Number,
+      mode: {
+        type: String,
+        enum: ['half-day', 'full-day', 'multi-day'],
+      },
     },
 
     vendorId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },

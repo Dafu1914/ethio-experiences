@@ -10,18 +10,10 @@ export async function fetchListings(params: Record<string, string> = {}) {
 
 export async function fetchListing(slug: string) {
   const url = `${API}/listings/${slug}`;
-  console.log('[server-api] fetchListing ->', url);
-
   const res = await fetch(url, { cache: 'no-store' });
-  console.log('[server-api] status:', res.status);
-
   if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    console.error('[server-api] body:', text);
     throw new Error(`Listing not found (${res.status})`);
   }
-
   const data = await res.json();
-  console.log('[server-api] got listing:', data?.listing?.slug);
   return data.listing;
 }

@@ -23,6 +23,10 @@ export type ListingCardData = {
     vehicleType?: string;
     seats?: number;
   };
+  guide?: {
+    specialties?: string[];
+    yearsExperience?: number;
+  };
 };
 
 function formatDuration(mins: number) {
@@ -57,7 +61,7 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
   const img = listing.images?.[0]?.url || '';
   const type = listing.type || 'tour';
   const unit =
-    listing.priceUnit || (type === 'stay' ? 'night' : type === 'driver' ? 'day' : 'person');
+    listing.priceUnit || (type === 'stay' ? 'night' : type === 'driver' ? 'day' : type === 'guide' ? 'day' : 'person');
 
   const toggleSave = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -101,6 +105,8 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
                 ? 'bg-ink'
                 : type === 'driver'
                 ? 'bg-[#7A1F1F]'
+                : type === 'guide'
+                ? 'bg-[#12A150]'
                 : 'bg-brand-blue'
             }`}
           >
@@ -144,6 +150,16 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
             {listing.driver.seats ? ` · ${listing.driver.seats} seats` : ''}
           </p>
         )}
+
+        {/* Guide info */}
+        {type === 'guide' && listing.guide?.specialties?.length ? (
+          <p className="text-[13px] text-muted">
+            🧭 {listing.guide.specialties.slice(0, 2).join(' · ')}
+            {listing.guide.yearsExperience
+              ? ` · ${listing.guide.yearsExperience} yrs`
+              : ''}
+          </p>
+        ) : null}
 
         {/* Tour duration */}
         {type === 'tour' && listing.durationMinutes ? (

@@ -3,6 +3,7 @@ import { fetchListing } from '@/lib/server-api';
 import { TourDetail } from '@/components/listing/TourDetail';
 import { StayDetail } from '@/components/listing/StayDetail';
 import { DriverDetail } from '@/components/listing/DriverDetail';
+import { GuideDetail } from '@/components/listing/GuideDetail';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,5 +25,6 @@ export default async function ListingPage({
 
   if (listing.type === 'stay') return <StayDetail listing={listing} />;
   if (listing.type === 'driver') return <DriverDetail listing={listing} />;
+  if (listing.type === 'guide') return <GuideDetail listing={listing} />;
   return <TourDetail listing={listing} />;
 }

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useT } from '@/i18n/useT';
 import { ListingCard, ListingCardData } from '@/components/ui/ListingCard';
 
-type Tab = 'all' | 'tour' | 'stay' | 'driver';
+type Tab = 'all' | 'tour' | 'stay' | 'driver' | 'guide';
 
 export function HomeListings({
   listings,
@@ -28,9 +28,19 @@ export function HomeListings({
       tour: listings.filter((l) => (l.type || 'tour') === 'tour').length,
       stay: listings.filter((l) => l.type === 'stay').length,
       driver: listings.filter((l) => l.type === 'driver').length,
+      guide: listings.filter((l) => l.type === 'guide').length,
     }),
     [listings]
   );
+
+  const browseHref =
+    tab === 'stay'
+      ? '/search?type=stay'
+      : tab === 'driver'
+      ? '/search?type=driver'
+      : tab === 'guide'
+      ? '/search?type=guide'
+      : '/search';
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-12">
@@ -48,6 +58,7 @@ export function HomeListings({
             { key: 'tour', label: 'Experiences' },
             { key: 'stay', label: 'Stays' },
             { key: 'driver', label: 'Drivers' },
+            { key: 'guide', label: 'Guides' },
           ] as const
         ).map((tb) => (
           <button
@@ -79,6 +90,8 @@ export function HomeListings({
               ? 'No stays yet'
               : tab === 'driver'
               ? 'No drivers yet'
+              : tab === 'guide'
+              ? 'No guides yet'
               : t('home.empty')}
           </p>
           <p className="mt-1 text-sm text-muted">
@@ -86,16 +99,12 @@ export function HomeListings({
               ? 'Check back soon for stays across Ethiopia.'
               : tab === 'driver'
               ? 'Check back soon for drivers across Ethiopia.'
+              : tab === 'guide'
+              ? 'Check back soon for local guides across Ethiopia.'
               : t('home.emptyHint')}
           </p>
           <Link
-            href={
-              tab === 'stay'
-                ? '/search?type=stay'
-                : tab === 'driver'
-                ? '/search?type=driver'
-                : '/search'
-            }
+            href={browseHref}
             className="mt-5 inline-block rounded-pill bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-blueHover"
           >
             {t('home.browseAll')}
@@ -112,13 +121,7 @@ export function HomeListings({
       {filtered.length > 0 && (
         <div className="mt-10 text-center">
           <Link
-            href={
-              tab === 'stay'
-                ? '/search?type=stay'
-                : tab === 'driver'
-                ? '/search?type=driver'
-                : '/search'
-            }
+            href={browseHref}
             className="inline-block rounded-pill border border-line px-6 py-3 text-sm font-semibold text-ink hover:bg-surface"
           >
             {t('home.viewAll')}

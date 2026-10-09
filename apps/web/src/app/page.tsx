@@ -11,15 +11,27 @@ export default async function Home() {
   let total = 0;
 
   try {
-    // Fetch 12 of each type, then merge
-    const [toursRes, staysRes] = await Promise.all([
-      fetchListings({ limit: '8', sort: 'popular', type: 'tour' }),
-      fetchListings({ limit: '8', sort: 'popular', type: 'stay' }),
+    const [toursRes, staysRes, driversRes, guidesRes] = await Promise.all([
+      fetchListings({ limit: '6', sort: 'popular', type: 'tour' }),
+      fetchListings({ limit: '6', sort: 'popular', type: 'stay' }),
+      fetchListings({ limit: '6', sort: 'popular', type: 'driver' }),
+      fetchListings({ limit: '6', sort: 'popular', type: 'guide' }),
     ]);
 
-    listings = [...(toursRes.items || []), ...(staysRes.items || [])];
-    total = (toursRes.total || 0) + (staysRes.total || 0);
-  } catch {}
+    listings = [
+      ...(toursRes.items || []),
+      ...(staysRes.items || []),
+      ...(driversRes.items || []),
+      ...(guidesRes.items || []),
+    ];
+    total =
+      (toursRes.total || 0) +
+      (staysRes.total || 0) +
+      (driversRes.total || 0) +
+      (guidesRes.total || 0);
+  } catch (err) {
+    console.error('[home] fetch failed:', err);
+  }
 
   return (
     <main>
