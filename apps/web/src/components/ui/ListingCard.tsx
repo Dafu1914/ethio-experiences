@@ -19,6 +19,10 @@ export type ListingCardData = {
   images: { url: string; alt: string }[];
   urgencyBadge?: string;
   isOriginal?: boolean;
+  driver?: {
+    vehicleType?: string;
+    seats?: number;
+  };
 };
 
 function formatDuration(mins: number) {
@@ -52,7 +56,8 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
   const [saved, setSaved] = useState(false);
   const img = listing.images?.[0]?.url || '';
   const type = listing.type || 'tour';
-  const unit = listing.priceUnit || (type === 'stay' ? 'night' : 'person');
+  const unit =
+    listing.priceUnit || (type === 'stay' ? 'night' : type === 'driver' ? 'day' : 'person');
 
   const toggleSave = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -85,13 +90,20 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           </div>
         )}
 
-        {/* Left badge: Original OR type badge for non-tours */}
         {listing.isOriginal ? (
           <span className="absolute left-3 top-3 rounded-full bg-brand-orange px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow">
             Original
           </span>
         ) : type !== 'tour' ? (
-          <span className="absolute left-3 top-3 rounded-full bg-ink px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow">
+          <span
+            className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow ${
+              type === 'stay'
+                ? 'bg-ink'
+                : type === 'driver'
+                ? 'bg-[#7A1F1F]'
+                : 'bg-brand-blue'
+            }`}
+          >
             {TYPE_BADGE[type] || type}
           </span>
         ) : null}
@@ -125,11 +137,23 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           {listing.title}
         </h3>
 
-        {listing.durationMinutes ? (
-          <p className="text-[13px] text-muted">{formatDuration(listing.durationMinutes)}</p>
-        ) : type === 'stay' ? (
-          <p className="text-[13px] text-muted">Overnight stay</p>
+        {/* Driver vehicle info */}
+        {type === 'driver' && listing.driver?.vehicleType && (
+          <p className="text-[13px] text-muted">
+            🚐 {listing.driver.vehicleType}
+            {listing.driver.seats ? ` · ${listing.driver.seats} seats` : ''}
+          </p>
+        )}
+
+        {/* Tour duration */}
+        {type === 'tour' && listing.durationMinutes ? (
+          <p className="text-[13px] text-muted">
+            {formatDuration(listing.durationMinutes)}
+          </p>
         ) : null}
+
+        {/* Stay overnight hint */}
+        {type === 'stay' && <p className="text-[13px] text-muted">Overnight stay</p>}
 
         <div className="flex items-end justify-between pt-1">
           <span className="flex items-center gap-1 text-[13px] text-ink">

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useT } from '@/i18n/useT';
 import { ListingCard, ListingCardData } from '@/components/ui/ListingCard';
 
-type Tab = 'all' | 'tour' | 'stay';
+type Tab = 'all' | 'tour' | 'stay' | 'driver';
 
 export function HomeListings({
   listings,
@@ -27,6 +27,7 @@ export function HomeListings({
       all: listings.length,
       tour: listings.filter((l) => (l.type || 'tour') === 'tour').length,
       stay: listings.filter((l) => l.type === 'stay').length,
+      driver: listings.filter((l) => l.type === 'driver').length,
     }),
     [listings]
   );
@@ -40,13 +41,13 @@ export function HomeListings({
         </span>
       </div>
 
-      {/* Tabs */}
       <div className="mb-6 flex flex-wrap gap-2">
         {(
           [
             { key: 'all', label: 'All' },
             { key: 'tour', label: 'Experiences' },
             { key: 'stay', label: 'Stays' },
+            { key: 'driver', label: 'Drivers' },
           ] as const
         ).map((tb) => (
           <button
@@ -74,15 +75,27 @@ export function HomeListings({
         <div className="rounded-card border border-line bg-surface p-12 text-center">
           <div className="mb-3 text-5xl">🌍</div>
           <p className="font-semibold text-ink">
-            {tab === 'stay' ? 'No stays yet' : t('home.empty')}
+            {tab === 'stay'
+              ? 'No stays yet'
+              : tab === 'driver'
+              ? 'No drivers yet'
+              : t('home.empty')}
           </p>
           <p className="mt-1 text-sm text-muted">
             {tab === 'stay'
               ? 'Check back soon for stays across Ethiopia.'
+              : tab === 'driver'
+              ? 'Check back soon for drivers across Ethiopia.'
               : t('home.emptyHint')}
           </p>
           <Link
-            href={tab === 'stay' ? '/search?type=stay' : '/search'}
+            href={
+              tab === 'stay'
+                ? '/search?type=stay'
+                : tab === 'driver'
+                ? '/search?type=driver'
+                : '/search'
+            }
             className="mt-5 inline-block rounded-pill bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-blueHover"
           >
             {t('home.browseAll')}
@@ -99,7 +112,13 @@ export function HomeListings({
       {filtered.length > 0 && (
         <div className="mt-10 text-center">
           <Link
-            href={tab === 'stay' ? '/search?type=stay' : '/search'}
+            href={
+              tab === 'stay'
+                ? '/search?type=stay'
+                : tab === 'driver'
+                ? '/search?type=driver'
+                : '/search'
+            }
             className="inline-block rounded-pill border border-line px-6 py-3 text-sm font-semibold text-ink hover:bg-surface"
           >
             {t('home.viewAll')}

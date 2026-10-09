@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { fetchListing } from '@/lib/server-api';
 import { TourDetail } from '@/components/listing/TourDetail';
 import { StayDetail } from '@/components/listing/StayDetail';
+import { DriverDetail } from '@/components/listing/DriverDetail';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,9 +22,7 @@ export default async function ListingPage({
 
   if (!listing) notFound();
 
-  if (listing.type === 'stay') {
-    return <StayDetail listing={listing} />;
-  }
-
+  if (listing.type === 'stay') return <StayDetail listing={listing} />;
+  if (listing.type === 'driver') return <DriverDetail listing={listing} />;
   return <TourDetail listing={listing} />;
 }

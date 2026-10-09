@@ -15,15 +15,27 @@ export interface IStayData {
   propertyType?: 'hotel' | 'lodge' | 'guesthouse' | 'homestay' | 'camp';
   roomTypes?: { name: string; pricePerNight: number; capacity: number }[];
   amenities?: string[];
-  checkInTime?: string;   // "14:00"
-  checkOutTime?: string;  // "11:00"
+  checkInTime?: string;
+  checkOutTime?: string;
   maxGuests?: number;
   bedrooms?: number;
   bathrooms?: number;
 }
 
+export interface IDriverData {
+  vehicleType?: string;
+  seats?: number;
+  yearMade?: number;
+  hasAC?: boolean;
+  hasWifi?: boolean;
+  baseCity?: string;
+  speaksEnglish?: boolean;
+  dailyRate?: number;
+  perDayIncluded?: string[];
+}
+
 export interface IListing extends Document {
-  type: ListingType;      // NEW — tour | stay | driver | guide
+  type: ListingType;
   slug: string;
   title: string;
   description: string;
@@ -32,11 +44,11 @@ export interface IListing extends Document {
   city: string;
   region: string;
   images: { url: string; alt: string }[];
-  durationMinutes?: number;   // optional for stays
+  durationMinutes?: number;
   groupSize?: number;
   languages: string[];
   priceFrom: { amount: number; currency: 'ETB' | 'USD' | 'EUR' };
-  priceUnit?: 'person' | 'night' | 'day' | 'trip';   // NEW
+  priceUnit?: 'person' | 'night' | 'day' | 'trip';
   rating: { avg: number; count: number };
   highlights: string[];
   included: string[];
@@ -49,7 +61,8 @@ export interface IListing extends Document {
   cancellationPolicy: '24h-free' | '48h-free' | 'non-refundable';
   urgencyBadge?: string;
   isOriginal: boolean;
-  stay?: IStayData;      // NEW — only for type: 'stay'
+  stay?: IStayData;
+  driver?: IDriverData;
   vendorId: mongoose.Types.ObjectId;
   status: 'draft' | 'pending' | 'published' | 'archived';
   createdAt: Date;
@@ -117,6 +130,7 @@ const ListingSchema = new Schema<IListing>(
     },
     urgencyBadge: String,
     isOriginal: { type: Boolean, default: false },
+
     stay: {
       propertyType: {
         type: String,
@@ -136,6 +150,19 @@ const ListingSchema = new Schema<IListing>(
       bedrooms: Number,
       bathrooms: Number,
     },
+
+    driver: {
+      vehicleType: String,
+      seats: Number,
+      yearMade: Number,
+      hasAC: { type: Boolean, default: false },
+      hasWifi: { type: Boolean, default: false },
+      baseCity: String,
+      speaksEnglish: { type: Boolean, default: true },
+      dailyRate: Number,
+      perDayIncluded: { type: [String], default: [] },
+    },
+
     vendorId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     status: {
       type: String,
